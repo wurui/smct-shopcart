@@ -1,8 +1,10 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:oxm="https://www.openxsl.com">
     <xsl:template match="/root" name="wurui.smct-shopcart">
+        <xsl:param name="submitaction">http://www.shaomachetie.com/smct/submitorderform?redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsmct%2Fworks.html</xsl:param>
         <!-- className 'J_OXMod' required  -->
         <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart">
             <div class="J_list list"></div>
+            <form class="J_mainform" action="{$submitaction}" method="post"></form>
 
 
             <script type="text/tpl" class="J_tpl"><![CDATA[
@@ -56,14 +58,14 @@
     <hr/>
     <div class="lrbar">
         <span>
-            商品总计: <span id="totalcount">{{data.length}}</span>张
+            商品总计: <span class="J_totalcount">{{data.length}}</span>张
         </span>
         <span>
-            商品总价: <span id="totalfee" class="price">{{totalfee}}</span>
+            商品总价: <span class="J_totalfee price">{{totalfee}}</span>
         </span>
     </div>
     <div class="formbar">
-                <label>收货地址:</label><span class="J_address address">吴瑞(18106568448)浙江省杭州市余杭区同城印象西区10-1-301</span>
+                <label>收货地址:</label><span class="J_address address">添加地址</span>
             </div>
             <div class="lrbar">
                 <span>发货城市:杭州</span>
@@ -79,13 +81,13 @@
                     </select>
                 </span>
                 <span>
-                    实付金额: <big class="J_totalfee price">--.--</big>
+                    实付金额: <big class="J_totalsum price">--.--</big>
                 </span>
             </div>
             <div class="lrbar">
                 <span></span>
                 <span>
-                    <button class="bt-order">提交订单</button>
+                    <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
                 </span>
             </div>
 ]]>
@@ -96,30 +98,32 @@
                     地址管理
                 </h3>
                 <div class="content">
+
                     <div class="address-form">
-                        <div class="formitem">
-                            <input type="text" placeholder="姓名"/>
-                        </div>
-                        <div class="formitem">
-                            <input type="telephone" placeholder="电话"/>
-                        </div>
-                        <div class="formitem">
-                            <div class="select-group">
-                                <select>
-                                    <option>省</option>
-                                    <option>新疆维吾尔自治区</option>
-                                </select>
-                                <select>
-                                    <option>市</option>
-                                </select>
-                                <select>
-                                    <option>区/省</option>
-                                </select>
+                        <form onsubmit="return false">
+                            <div class="formitem">
+                                <input type="text" name="name" placeholder="姓名"/>
                             </div>
-                        </div>
-                        <div class="formitem">
-                            <input type="text" placeholder="详细地址"/>
-                        </div>
+                            <div class="formitem">
+                                <input type="telephone" name="phone" placeholder="电话"/>
+                            </div>
+                            <div class="formitem">
+                                <div class="select-group" data-toggle="distpicker" data-autoselect="3">
+                                    <select class="J_province" name="province">
+                                        <option>省</option>
+                                    </select>
+                                    <select class="J_city" name="city">
+                                        <option>市</option>
+                                    </select>
+                                    <select class="J_district" name="district">
+                                        <option>区/省</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="formitem">
+                                <input type="text" name="detail" placeholder="详细地址"/>
+                            </div>
+                        </form>
                         <div class="formitem">
                             <button class="J_confirm">确认</button>
                         </div>

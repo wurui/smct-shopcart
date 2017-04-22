@@ -1,6 +1,6 @@
-define(['zepto', 'mustache'], function (undef, Mustache) {
+define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
-    var tpl;
+    var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;
     var queryString = function (query) {
         var search = window.location.search + '';
         if (search.charAt(0) != '?') {
@@ -34,10 +34,10 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
             //console.log('Settings',Settings[bid])
             renderConf[bid] = {
                 count: count,
-                tplcolor: $('.preview', $n).css('backgroundColor'),
+                tplcolor: $('.preview', $n).css('background-color'),
                 text1: setting.text1,
                 text2: setting.text2,
-                carlogo: setting.carlogo ? 'http://www.shaomachetie.com/static/smct/img/carlogo/' + setting.carlogo + '.jpg' : null
+                carlogo: setting.carlogo ? 'http://www.shaomachetie.com/smct/getcarlogo?name=' + setting.carlogo : null
             }
             //OrderModel.totalfee+=$number.val() * $number.attr('data-price');
 
@@ -46,42 +46,47 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
 
         var cb_count = 0;
         var gencodes = [];
+        var encoded_codes = [];
 
         var cb = function () {
             cb_count++;
             if (cb_count == totalcount) {
                 //console.log('OK');
-                fn(gencodes)
+                fn(gencodes, encoded_codes)
             }
 
         };
+        require(['./gen-qrcode'], function (renderPaper) {
+            $.getJSON('http://www.shaomachetie.com/smct/gencode?count=' + totalcount + '&callback=?', function (r) {
+                var codes = r.data;
+                gencodes = [].concat(codes);
 
-        $.getJSON('http://www.shaomachetie.com/smct/gencode', {count: totalcount}, function (r) {
-            var codes = r.data;
-            gencodes = [].concat(codes);
-
-            for (var k in renderConf) {
-                var count = renderConf[k].count;
-                var i = 0;
-                while (i < count) {
+                for (var k in renderConf) {
+                    var count = renderConf[k].count;
+                    var i = 0;
+                    while (i < count) {
 
 
-                    renderPaper(codes.shift(), renderConf[k], function (dataURL, code) {
-                        //console.log(code);
-                        //console.log(dataURL);
+                        renderPaper(codes.shift(), renderConf[k], function (dataURL, code) {
+                            //console.log(code);
+                            //console.log(dataURL);
+                            /*
 
-                        $.post('http://www.shaomachetie.com/smct/uploadpaper', {
-                            code: code,
-                            base64: dataURL
-                        }, cb);
-                        //cb();
-                    });
-                    i++;
+                             $.post('http://www.shaomachetie.com/smct/uploadpaper', {
+                             code: code,
+                             base64: dataURL
+                             }, cb);
+                             */
+                            encoded_codes.push(code + '#' + dataURL);
+                            cb();
+                        });
+                        i++;
+                    }
                 }
-            }
 
+            });
 
-        });
+        })
 
 
     };
@@ -99,22 +104,21 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
                     OrderModel.totalfee += $number.val() * $number.attr('data-price');
 
                 });
-                $('#totalcount').html(totalcount)
+                $totalcount.html(totalcount)
 
 
-                $('#totalfee').html(OrderModel.totalfee.toFixed(2));
+                $totalfee.html(OrderModel.totalfee.toFixed(2));
                 if (OrderModel.deliveryfee) {
                     OrderModel.totalsum = OrderModel.totalfee - -OrderModel.deliveryfee;
-                    $('#totalsum').html(OrderModel.totalsum.toFixed(2));
+                    $totalsum.html(OrderModel.totalsum.toFixed(2));
                 }
-
 
                 break
             case 'address':
                 OrderModel.totalsum = OrderModel.totalfee - -OrderModel.deliveryfee;
 
-                $('#totalsum').html(OrderModel.totalsum.toFixed(2));
-                $('#btpay').attr('disabled', false)
+                $totalsum.html(OrderModel.totalsum.toFixed(2));
+                $btpay.removeAttr('disabled')
                 break
             case 'material':
                 break
@@ -123,36 +127,8 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
 
 
     var DeliveryAdmin = {
-        showDialog: function () {
-            $('#deliveryDialog').dialog({
-                title: '管理收货地址',
-                width: 600,
-                modal: true,
-                buttons: [
-                    {
-                        text: "确定",
-                        icons: {
-                            primary: "ui-icon-check"
-                        },
-                        click: function () {
-                            DeliveryAdmin.addAddress();
-                            $(this).dialog("close");
-                        }
-                    },
-                    {
-                        text: "取消",
-                        icons: {
-                            primary: "ui-icon-closethick"
-                        },
-                        click: function () {
-                            $(this).dialog("close");
-                        }
-                    }
-                ]
-            });
-        },
-        addAddress: function () {
-            var $f = $('#deliveryDialog>form'),
+        addAddress: function ($popup) {
+            var $f = $('form', $popup),
                 f = $f[0],
                 fields = 'name,phone,province,city,district,detail'.split(','),
                 addrObj = {},
@@ -166,17 +142,21 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
                 addrObj[field] = f[field].value;
             }
             //console.log(addrObj);
-            $('#delivery').html(addrToString.call(addrObj));
+            $delivery.html(addrToString.call(addrObj));
             OrderModel.address = addrObj;
             DeliveryAdmin.getDeliveryFee(addrObj, function (r) {
-                $('#deliveryfee').html(OrderModel.deliveryfee = (r - 0).toFixed(2));
+                $deliveryfee.html(OrderModel.deliveryfee = (r - 0).toFixed(2));
                 syncView('address');
             });
 
 
         },
         getDeliveryFee: function (addrObj, fn) {
-            $.getJSON('http://www.shaomachetie.com/smct/getdeliveryfee', addrObj, function (r) {
+            var p = []
+            for (var k in addrObj) {
+                p.push(k + '=' + addrObj[k])
+            }
+            $.getJSON('http://www.shaomachetie.com/smct/getdeliveryfee?' + p.join('&') + '&callback=?', function (r) {
                 fn(r.data)
             })
         }
@@ -191,7 +171,7 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
                 totalfee += n.price;
                 Settings[n._id] = n.setting;
             }
-            debugger
+
             $('#list').html(Mustache.render(tpl, {
                 data: list,
                 totalfee: totalfee.toFixed(2)
@@ -207,20 +187,21 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
     return {
         init: function ($mod) {
             tpl = $('.J_tpl', $mod).html();
+
             var $list = $('.J_list', $mod);
-            var $popup=$('.J_popup',$mod).on('click',function(e){
+            var $popup = $('.J_popup', $mod).on('click', function (e) {
                 var $tar = $(e.target);
                 switch (true) {
                     case $tar.hasClass('J_close'):
                         $popup.removeClass('show')
                         break
                     case $tar.hasClass('J_confirm'):
-                        $popup.removeClass('show')
+                        $popup.removeClass('show');
+                        DeliveryAdmin.addAddress($popup);
                         break
                 }
             });
-            var r={"code":0,"data":[{"_id":"58fad702af8ed35244d3555a","setting":{"tpl":"1","bgcolor":"1","text1":"SSS","text2":"www.shaomachetie.com","carlogo":"奔驰"},"price":12,"cts":1492834050541,"status":0},{"_id":"58fad3c20c0750bf4353e8bc","setting":{"tpl":"1","bgcolor":"1","text1":"QQQ","text2":"www.shaomachetie.com"},"price":12,"cts":1492833218446,"status":0}],"error":null}
-           // $.getJSON('http://www.shaomachetie.com/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
+            $.getJSON('http://www.shaomachetie.com/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
                 if (r && r.data && r.data.length) {
                     var list = r.data;
                     var totalfee = 0;
@@ -233,12 +214,69 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
                         totalfee: totalfee.toFixed(2)
                     }));
                     OrderModel.totalfee = totalfee;
+                    $delivery = $('.J_address', $list);
+                    $deliveryfee = $('.J_delieryfee', $list);
+                    $totalsum = $('.J_totalsum', $list)
+                    $totalcount = $('.J_totalcount', $list)
+                    $totalfee = $('.J_totalfee', $list);
+
+                    var loading = false;
+                    $btpay = $('.J_btpay', $list).on('click', function () {
+                        if (loading) {
+                            $btpay.addClass('loading')
+                            return false
+                        }
+                        if ($totalcount.html() == 0) {
+                            return alert('请至少添加一个商品')
+                        }
+                        loading = true;
+                        var pack = [];
+                        $('tr[data-id]').each(function (i, n) {
+                            var $n = $(n);
+                            pack.push({
+                                bid: $n.attr('data-id'),
+                                amount: $('.J_number', $n).val(),
+                                material: $('.J_material', $n).val()
+                            })
+                        });
+                        syncCode(function (codes, encoded_codes) {
+                            var mainform = $('.J_mainform', $mod)[0];
+                            var smtData = {
+                                pack: JSON.stringify(pack),
+                                delivery: JSON.stringify(OrderModel.address),
+                                codes: JSON.stringify(codes),
+                                totalcount: $totalcount.html() - 0,
+                                totalfee: $totalfee.html() - 0,
+                                deliveryfee: OrderModel.deliveryfee,
+                                totalsum: OrderModel.totalsum
+                                //encoded_codes:encoded_codes
+                            };
+                            for (var k in smtData) {
+                                var hid = document.createElement('input')
+                                hid.type = 'hidden';
+                                hid.name = k;
+                                hid.value = smtData[k];
+                                mainform.appendChild(hid);
+                            }
+                            for (var i = 0, ecode; ecode = encoded_codes[i++];) {
+                                var hid = document.createElement('input')
+                                hid.type = 'hidden';
+                                hid.name = 'encoded_code';
+                                hid.value = ecode;
+                                mainform.appendChild(hid);
+                            }
+                            mainform.submit();
+                        });
+
+                        return false;
+                    });
+                    //$('[data-toggle="distpicker"]').distpicker({});
 
                     // $('[data-toggle="distpicker"]').distpicker({});
                 } else {
                     $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
                 }
-            //});
+            });
 
             $list.on('change', function (e) {
                 var $tar = $(e.target);
@@ -262,52 +300,20 @@ define(['zepto', 'mustache'], function (undef, Mustache) {
                         break
                     case $tar.hasClass('J_address'):
 
-                        $popup.addClass('show')
+                        $popup.addClass('show');
+                        require(['./distpicker'], function (distpicker) {
+                            distpicker.init({
+                                provinceEl: $('.J_province', $popup)[0],
+                                cityEl: $('.J_city', $popup)[0],
+                                districtEl: $('.J_district', $popup)[0]
+                            });
+
+                        })
                         break
                 }
             })
 
             //var f = document.getElementById('orderform');
-            var loading = false,
-                btpay = $('#btpay').on('click', function () {
-                    if (loading) {
-                        btpay.addClass('loading')
-                        return false
-                    }
-                    loading = true;
-                    var pack = [];
-                    $('tr[data-id]').each(function (i, n) {
-                        var $n = $(n);
-                        pack.push({
-                            bid: $n.attr('data-id'),
-                            amount: $('.J_number', $n).val(),
-                            material: $('.J_material', $n).val()
-                        })
-                    });
-                    syncCode(function (codes) {
-                        $.post('/smct/submitorder', {
-                            pack: JSON.stringify(pack),
-                            delivery: JSON.stringify(OrderModel.address),
-                            codes: JSON.stringify(codes),
-                            totalcount: $('#totalcount').html() - 0,
-                            totalfee: $('#totalfee').html() - 0,
-                            deliveryfee: OrderModel.deliveryfee,
-                            totalsum: OrderModel.totalsum
-                        }, function (r) {
-                            loading = false;
-                            btpay.removeClass('loading')
-                            if (r.error) {
-                                alert(r.error)
-                            } else {
-                                // alert('支付去吧~~')
-                                location.href = '/alipay/pay?from=smct&oid=' + r.data;
-                            }
-
-                        });
-                    });
-
-                    return false;
-                });
 
         }
     }
