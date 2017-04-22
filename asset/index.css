@@ -1,3 +1,264 @@
-.oxmod-smct-shopcart{
-/* CSS */
- }
+.oxmod-smct-shopcart {
+  text-align: center;
+}
+.oxmod-smct-shopcart .bgcolor-1 {
+  background-color: #0b97c4;
+}
+.oxmod-smct-shopcart .bgcolor-2 {
+  background-color: yellow;
+}
+.oxmod-smct-shopcart .bgcolor-3 {
+  background-color: red;
+}
+.oxmod-smct-shopcart .bgcolor-4 {
+  background-color: rosybrown;
+}
+.oxmod-smct-shopcart .bgcolor-5 {
+  background-color: green;
+}
+.oxmod-smct-shopcart .bgcolor-6 {
+  background-color: greenyellow;
+}
+.oxmod-smct-shopcart .bgcolor-7 {
+  background-color: gray;
+}
+.oxmod-smct-shopcart .bgcolor-8 {
+  background-color: gold;
+}
+.oxmod-smct-shopcart .bgcolor-9 {
+  background-color: blueviolet;
+}
+.oxmod-smct-shopcart .bgcolor-10 {
+  background-color: silver;
+}
+.oxmod-smct-shopcart .bgcolor-11 {
+  background-color: chocolate;
+}
+.oxmod-smct-shopcart .bgcolor-12 {
+  background-color: cadetblue;
+}
+.oxmod-smct-shopcart .color-1 {
+  background-color: #fff;
+}
+.oxmod-smct-shopcart .color-2 {
+  background-color: yellow;
+}
+.oxmod-smct-shopcart .color-3 {
+  background-color: red;
+}
+.oxmod-smct-shopcart .color-4 {
+  background-color: rosybrown;
+}
+.oxmod-smct-shopcart .color-5 {
+  background-color: green;
+}
+.oxmod-smct-shopcart .color-6 {
+  background-color: greenyellow;
+}
+.oxmod-smct-shopcart .color-7 {
+  background-color: gray;
+}
+.oxmod-smct-shopcart .color-8 {
+  background-color: gold;
+}
+.oxmod-smct-shopcart .color-9 {
+  background-color: #0099cc;
+}
+.oxmod-smct-shopcart .color-10 {
+  background-color: silver;
+}
+.oxmod-smct-shopcart .color-11 {
+  background-color: chocolate;
+}
+.oxmod-smct-shopcart .color-12 {
+  background-color: cadetblue;
+}
+.oxmod-smct-shopcart .preview {
+  border-radius: 40px;
+  width: 500px;
+  height: 500px;
+  margin: 10px auto;
+  box-shadow: 0px 0px 5px #999;
+  overflow: hidden;
+  border: solid 1px #ccc;
+  font-family: sans-serif;
+  text-align: center;
+}
+.oxmod-smct-shopcart .qrcode {
+  margin-top: 40px;
+  width: 280px;
+  height: 280px;
+  padding: 5px;
+  border: solid 1px #ccc;
+}
+.oxmod-smct-shopcart .card-header {
+  color: #fff;
+  font-size: 55px;
+  letter-spacing: 5px;
+  height: 120px;
+  line-height: 120px;
+  font-family: '黑体', sans-serif;
+  font-weight: 700;
+}
+.oxmod-smct-shopcart .card-body {
+  background-color: #fff;
+  height: 340px;
+}
+.oxmod-smct-shopcart .card-footer {
+  height: 41px;
+  line-height: 40px;
+  font-size: 18px;
+  color: #666;
+  background-color: #fff;
+  letter-spacing: 1px;
+  margin-top: -1px;
+  /**解决缩放有条线的问题*/
+}
+.oxmod-smct-shopcart .snapshot {
+  width: 150px;
+  height: 155px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.oxmod-smct-shopcart .snapshot > .preview {
+  transform: scale(0.3);
+  transform-origin: 0 0;
+  margin: 0;
+}
+.oxmod-smct-shopcart .central {
+  position: absolute;
+  margin-left: 210px;
+  margin-top: 150px;
+  width: 78px;
+  height: 78px;
+  text-align: center;
+  line-height: 78px;
+  overflow: hidden;
+}
+.oxmod-smct-shopcart .central-bg {
+  background-color: #fff;
+}
+.oxmod-smct-shopcart .central img {
+  width: 78px;
+  height: 78px;
+  vertical-align: middle;
+  background-color: #fff;
+  border-radius: 5px;
+}
+.oxmod-smct-shopcart .bt-order {
+  background-color: #f60;
+  width: 120px;
+  color: #fff;
+  display: inline-block;
+  border: none;
+  height: 40px;
+  padding: 0 10px;
+  vertical-align: top;
+  font-size: 15px;
+  letter-spacing: 2px;
+}
+.oxmod-smct-shopcart .bt-order:disabled {
+  background-color: #999;
+}
+.oxmod-smct-shopcart .bt-order:hover {
+  opacity: .8;
+}
+.oxmod-smct-shopcart .empty {
+  text-align: center;
+  padding: 30px 0;
+  color: #888;
+}
+.oxmod-smct-shopcart .iconfont {
+  font-family: smct-iconfont;
+  font-style: normal;
+}
+.oxmod-smct-shopcart .loading {
+  color: #999;
+  padding: 30px 0;
+}
+.oxmod-smct-shopcart .order-table {
+  width: 100%;
+}
+.oxmod-smct-shopcart .order-table thead th {
+  background-color: #f5f5f5;
+  height: 30px;
+}
+.oxmod-smct-shopcart .order-table td {
+  text-align: center;
+  border-top: dotted 1px #f5f5f5;
+  padding: 0 5px;
+}
+.oxmod-smct-shopcart .amount-up,
+.oxmod-smct-shopcart .amount-down {
+  width: 40px;
+  height: 30px;
+  background-color: #f5f5f5;
+  border: solid 1px transparent;
+  padding: 0;
+  outline: none;
+}
+.oxmod-smct-shopcart .amount-up:before,
+.oxmod-smct-shopcart .amount-down:before {
+  content: '';
+  width: 0;
+  height: 0;
+  font-size: 0;
+  display: inline-block;
+  border-width: 5px;
+  border-style: solid;
+}
+.oxmod-smct-shopcart .amount-up:hover,
+.oxmod-smct-shopcart .amount-down:hover {
+  background-color: #ccc;
+}
+.oxmod-smct-shopcart .amount-up:before {
+  border-color: transparent transparent #333 transparent;
+  margin-top: -3px;
+}
+.oxmod-smct-shopcart .amount-down:before {
+  margin-top: 5px;
+  border-color: #333 transparent transparent transparent;
+}
+.oxmod-smct-shopcart .amount-input {
+  width: 40px;
+  height: 30px;
+  font-size: 15px;
+  border: solid 1px #ccc;
+  text-align: center;
+  padding: 0;
+  margin: 5px 0;
+}
+.oxmod-smct-shopcart .price {
+  color: #f60;
+  font-size: 1.2em;
+}
+.oxmod-smct-shopcart .price:before {
+  content: '\00a5\20';
+  font-family: sans-serif;
+}
+.oxmod-smct-shopcart hr {
+  height: 0;
+  border: none;
+  border-top: solid 1px #f5f5f5;
+}
+.oxmod-smct-shopcart .lrbar {
+  font-size: 0;
+  margin: 10px;
+  white-space: nowrap;
+}
+.oxmod-smct-shopcart .lrbar > span {
+  width: 50%;
+  font-size: 14px;
+  display: inline-block;
+}
+.oxmod-smct-shopcart .lrbar > span:first-child {
+  text-align: left;
+}
+.oxmod-smct-shopcart .lrbar > span:last-child {
+  text-align: right;
+}
+.oxmod-smct-shopcart .lrbar > span:only-child {
+  width: 100%;
+  text-align: left;
+}
