@@ -1,7 +1,7 @@
-define(['zepto','mustache'],function(undef,Mustache){
+define(['zepto', 'mustache'], function (undef, Mustache) {
 
     var tpl;
-    var queryString= function (query) {
+    var queryString = function (query) {
         var search = window.location.search + '';
         if (search.charAt(0) != '?') {
             return '';
@@ -190,94 +190,125 @@ define(['zepto','mustache'],function(undef,Mustache){
             for (var i = 0, n; n = list[i++];) {
                 totalfee += n.price;
                 Settings[n._id] = n.setting;
-            }debugger
+            }
+            debugger
             $('#list').html(Mustache.render(tpl, {
                 data: list,
                 totalfee: totalfee.toFixed(2)
             }));
             OrderModel.totalfee = totalfee;
 
-           // $('[data-toggle="distpicker"]').distpicker({});
+            // $('[data-toggle="distpicker"]').distpicker({});
         } else {
             $('#list').html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
         }
     };
 
     return {
-    init:function($mod){
-        tpl=$('.J_tpl',$mod).html();
-        var $list=$('.J_list',$mod);
-        $.getJSON('http://www.shaomachetie.com/smct/getbuilds?bids='+bids+'&callback=?', function render(r) {
-            if (r && r.data && r.data.length) {
-                var list = r.data;
-                var totalfee = 0;
-                for (var i = 0, n; n = list[i++];) {
-                    totalfee += n.price;
-                    Settings[n._id] = n.setting;
+        init: function ($mod) {
+            tpl = $('.J_tpl', $mod).html();
+            var $list = $('.J_list', $mod);
+            var $popup=$('.J_popup',$mod).on('click',function(e){
+                var $tar = $(e.target);
+                switch (true) {
+                    case $tar.hasClass('J_close'):
+                        $popup.removeClass('show')
+                        break
+                    case $tar.hasClass('J_confirm'):
+                        $popup.removeClass('show')
+                        break
                 }
-                $list.html(Mustache.render(tpl, {
-                    data: list,
-                    totalfee: totalfee.toFixed(2)
-                }));
-                OrderModel.totalfee = totalfee;
-
-                // $('[data-toggle="distpicker"]').distpicker({});
-            } else {
-                $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
-            }
-        });
-
-        $list.on('change', function (e) {
-            var $tar = $(e.target);
-            switch (true) {
-                case $tar.hasClass('J_number'):
-                    syncView('amount');
-                    break
-            }
-        })
-
-        //var f = document.getElementById('orderform');
-        var loading = false,
-            btpay = $('#btpay').on('click', function () {
-                if (loading) {
-                    btpay.addClass('loading')
-                    return false
-                }
-                loading=true;
-                var pack = [];
-                $('tr[data-id]').each(function (i, n) {
-                    var $n = $(n);
-                    pack.push({
-                        bid: $n.attr('data-id'),
-                        amount: $('.J_number', $n).val(),
-                        material: $('.J_material', $n).val()
-                    })
-                });
-                syncCode(function (codes) {
-                    $.post('/smct/submitorder', {
-                        pack: JSON.stringify(pack),
-                        delivery: JSON.stringify(OrderModel.address),
-                        codes: JSON.stringify(codes),
-                        totalcount: $('#totalcount').html() - 0,
-                        totalfee: $('#totalfee').html() - 0,
-                        deliveryfee: OrderModel.deliveryfee,
-                        totalsum: OrderModel.totalsum
-                    }, function (r) {
-                        loading=false;
-                        btpay.removeClass('loading')
-                        if (r.error) {
-                            alert(r.error)
-                        } else {
-                            // alert('支付去吧~~')
-                            location.href = '/alipay/pay?from=smct&oid=' + r.data;
-                        }
-
-                    });
-                });
-
-                return false;
             });
+            var r={"code":0,"data":[{"_id":"58fad702af8ed35244d3555a","setting":{"tpl":"1","bgcolor":"1","text1":"SSS","text2":"www.shaomachetie.com","carlogo":"奔驰"},"price":12,"cts":1492834050541,"status":0},{"_id":"58fad3c20c0750bf4353e8bc","setting":{"tpl":"1","bgcolor":"1","text1":"QQQ","text2":"www.shaomachetie.com"},"price":12,"cts":1492833218446,"status":0}],"error":null}
+           // $.getJSON('http://www.shaomachetie.com/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
+                if (r && r.data && r.data.length) {
+                    var list = r.data;
+                    var totalfee = 0;
+                    for (var i = 0, n; n = list[i++];) {
+                        totalfee += n.price;
+                        Settings[n._id] = n.setting;
+                    }
+                    $list.html(Mustache.render(tpl, {
+                        data: list,
+                        totalfee: totalfee.toFixed(2)
+                    }));
+                    OrderModel.totalfee = totalfee;
 
+                    // $('[data-toggle="distpicker"]').distpicker({});
+                } else {
+                    $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
+                }
+            //});
+
+            $list.on('change', function (e) {
+                var $tar = $(e.target);
+                switch (true) {
+                    case $tar.hasClass('J_number'):
+                        syncView('amount');
+                        break
+                }
+            }).on('click', function (e) {
+                var $tar = $(e.target);
+                switch (true) {
+                    case $tar.hasClass('J_amountUp'):
+                        var $input = $tar.siblings('.J_number');
+                        $input.val($input.val() - -1)
+                        syncView('amount');
+                        break
+                    case $tar.hasClass('J_amountDown'):
+                        var $input = $tar.siblings('.J_number');
+                        $input.val(Math.max($input.val() - 1, 0))
+                        syncView('amount');
+                        break
+                    case $tar.hasClass('J_address'):
+
+                        $popup.addClass('show')
+                        break
+                }
+            })
+
+            //var f = document.getElementById('orderform');
+            var loading = false,
+                btpay = $('#btpay').on('click', function () {
+                    if (loading) {
+                        btpay.addClass('loading')
+                        return false
+                    }
+                    loading = true;
+                    var pack = [];
+                    $('tr[data-id]').each(function (i, n) {
+                        var $n = $(n);
+                        pack.push({
+                            bid: $n.attr('data-id'),
+                            amount: $('.J_number', $n).val(),
+                            material: $('.J_material', $n).val()
+                        })
+                    });
+                    syncCode(function (codes) {
+                        $.post('/smct/submitorder', {
+                            pack: JSON.stringify(pack),
+                            delivery: JSON.stringify(OrderModel.address),
+                            codes: JSON.stringify(codes),
+                            totalcount: $('#totalcount').html() - 0,
+                            totalfee: $('#totalfee').html() - 0,
+                            deliveryfee: OrderModel.deliveryfee,
+                            totalsum: OrderModel.totalsum
+                        }, function (r) {
+                            loading = false;
+                            btpay.removeClass('loading')
+                            if (r.error) {
+                                alert(r.error)
+                            } else {
+                                // alert('支付去吧~~')
+                                location.href = '/alipay/pay?from=smct&oid=' + r.data;
+                            }
+
+                        });
+                    });
+
+                    return false;
+                });
+
+        }
     }
-  }
 })
