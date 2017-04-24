@@ -1,7 +1,7 @@
 /**
  * Created by wurui on 22/04/2017.
  */
-define(['require'],function(require){
+define(['require','oxjs'],function(require,OXJS){
 
     var renderSelect=function(sel,data){
         sel.options.length=0;
@@ -19,6 +19,10 @@ define(['require'],function(require){
                 districtEl=conf.districtEl,
                 Distdata,
                 onProvinceChanged=function(){
+                    if(/台湾|香港|澳门/.test(provinceEl.value)){
+                        provinceEl.selectedIndex=0;
+                        OXJS.toast('暂不支持配送到该地区')
+                    }
                     renderSelect(cityEl,Distdata[provinceEl.options[provinceEl.selectedIndex].code]);
                     onCityChanged();
                 },

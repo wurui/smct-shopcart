@@ -186,6 +186,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
     return {
         init: function ($mod) {
+
             tpl = $('.J_tpl', $mod).html();
 
             var $list = $('.J_list', $mod);
