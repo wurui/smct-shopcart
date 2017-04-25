@@ -25,75 +25,6 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     var OrderModel = {};
     var Settings = {};
 
-    var syncCode = function (fn) {
-        var totalcount = 0;
-        var renderConf = {};
-        $('tr[data-id]').each(function (i, n) {
-            var $n = $(n),
-                bid = $n.attr('data-id'),
-                $number = $('.J_number', $n),
-                count = $number.val() * 1;
-            totalcount += count;
-            var setting = Settings[bid];
-            //console.log('Settings',Settings[bid])
-            renderConf[bid] = {
-                count: count,
-                tplcolor: $('.preview', $n).css('background-color'),
-                text1: setting.text1,
-                text2: setting.text2,
-                carlogo: setting.carlogo ? apiHost+'/smct/getcarlogo?name=' + setting.carlogo : null
-            }
-            //OrderModel.totalfee+=$number.val() * $number.attr('data-price');
-
-        });
-        //console.log(renderConf)
-
-        var cb_count = 0;
-        var gencodes = [];
-        var encoded_codes = [];
-
-        var cb = function () {
-            cb_count++;
-            if (cb_count == totalcount) {
-                //console.log('OK');
-                fn(gencodes, encoded_codes)
-            }
-
-        };
-        require(['./gen-qrcode'], function (renderPaper) {
-            $.getJSON(apiHost+'/smct/gencode?count=' + totalcount + '&callback=?', function (r) {
-                var codes = r.data;
-                gencodes = [].concat(codes);
-
-                for (var k in renderConf) {
-                    var count = renderConf[k].count;
-                    var i = 0;
-                    while (i < count) {
-
-
-                        renderPaper(codes.shift(), renderConf[k], function (dataURL, code) {
-                            //console.log(code);
-                            //console.log(dataURL);
-                            /*
-
-                             $.post(apiHost+'/smct/uploadpaper', {
-                             code: code,
-                             base64: dataURL
-                             }, cb);
-                             */
-                            encoded_codes.push(code + '#' + dataURL);
-                            cb();
-                        });
-                        i++;
-                    }
-                }
-
-            });
-
-        })
-
-
-    };
 
     var syncView = function (trigger) {
         switch (trigger) {
@@ -244,34 +175,28 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                                 material: $('.J_material', $n).val()
                             })
                         });
-                        syncCode(function (codes, encoded_codes) {
-                            var mainform = $('.J_mainform', $mod)[0];
-                            var smtData = {
-                                pack: JSON.stringify(pack),
-                                delivery: JSON.stringify(OrderModel.address),
-                                codes: JSON.stringify(codes),
-                                totalcount: $totalcount.html() - 0,
-                                totalfee: $totalfee.html() - 0,
-                                deliveryfee: OrderModel.deliveryfee,
-                                totalsum: OrderModel.totalsum
-                                //encoded_codes:encoded_codes
-                            };
-                            for (var k in smtData) {
-                                var hid = document.createElement('input')
-                                hid.type = 'hidden';
-                                hid.name = k;
-                                hid.value = smtData[k];
-                                mainform.appendChild(hid);
-                            }
-                            for (var i = 0, ecode; ecode = encoded_codes[i++];) {
-                                var hid = document.createElement('input')
-                                hid.type = 'hidden';
-                                hid.name = 'encoded_code';
-                                hid.value = ecode;
-                                mainform.appendChild(hid);
-                            }
-                            mainform.submit();
-                        });
+
+                        var mainform = $('.J_mainform', $mod)[0];
+                        var smtData = {
+                            pack: JSON.stringify(pack),
+                            delivery: JSON.stringify(OrderModel.address),
+                            //codes: JSON.stringify(codes),
+                            totalcount: $totalcount.html() - 0,
+                            totalfee: $totalfee.html() - 0,
+                            deliveryfee: OrderModel.deliveryfee,
+                            totalsum: OrderModel.totalsum
+                            //encoded_codes:encoded_codes
+                        };
+                        for (var k in smtData) {
+                            var hid = document.createElement('input')
+                            hid.type = 'hidden';
+                            hid.name = k;
+                            hid.value = smtData[k];
+                            mainform.appendChild(hid);
+                        }
+
+                        mainform.submit();
+
 
                         return false;
                     });
