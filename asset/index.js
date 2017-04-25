@@ -1,4 +1,5 @@
 define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
+    var apiHost='http://localhost:8000';//http://www.shaomachetie.com
 
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;
     var queryString = function (query) {
@@ -37,7 +38,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                 tplcolor: $('.preview', $n).css('background-color'),
                 text1: setting.text1,
                 text2: setting.text2,
-                carlogo: setting.carlogo ? 'http://www.shaomachetie.com/smct/getcarlogo?name=' + setting.carlogo : null
+                carlogo: setting.carlogo ? apiHost+'/smct/getcarlogo?name=' + setting.carlogo : null
             }
             //OrderModel.totalfee+=$number.val() * $number.attr('data-price');
 
@@ -57,7 +58,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
         };
         require(['./gen-qrcode'], function (renderPaper) {
-            $.getJSON('http://www.shaomachetie.com/smct/gencode?count=' + totalcount + '&callback=?', function (r) {
+            $.getJSON(apiHost+'/smct/gencode?count=' + totalcount + '&callback=?', function (r) {
                 var codes = r.data;
                 gencodes = [].concat(codes);
 
@@ -72,7 +73,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             //console.log(dataURL);
                             /*
 
-                             $.post('http://www.shaomachetie.com/smct/uploadpaper', {
+                             $.post(apiHost+'/smct/uploadpaper', {
                              code: code,
                              base64: dataURL
                              }, cb);
@@ -156,7 +157,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
             for (var k in addrObj) {
                 p.push(k + '=' + addrObj[k])
             }
-            $.getJSON('http://www.shaomachetie.com/smct/getdeliveryfee?' + p.join('&') + '&callback=?', function (r) {
+            $.getJSON(apiHost+'/smct/getdeliveryfee?' + p.join('&') + '&callback=?', function (r) {
                 fn(r.data)
             })
         }
@@ -180,7 +181,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
             // $('[data-toggle="distpicker"]').distpicker({});
         } else {
-            $('#list').html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
+            $('#list').html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的<br/>赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制 &raquo;</a>').addClass('empty-order');
         }
     };
 
@@ -202,7 +203,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         break
                 }
             });
-            $.getJSON('http://www.shaomachetie.com/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
+            $.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
                 if (r && r.data && r.data.length) {
                     var list = r.data;
                     var totalfee = 0;
