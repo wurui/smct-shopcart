@@ -1,5 +1,8 @@
 define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
-    var apiHost='http://localhost:8000';//http://www.shaomachetie.com
+    var apiHost = 'http://www.shaomachetie.com';
+    if(document.documentElement.getAttribute('env')=='local') {
+        apiHost = 'http://localhost:8000'
+    }
 
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;
     var queryString = function (query) {
