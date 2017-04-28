@@ -1,6 +1,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:oxm="https://www.openxsl.com">
     <xsl:template match="/root" name="wurui.smct-shopcart">
-        <xsl:param name="submitaction">http://localhost:8000/smct/submitorderform?redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsmct%2Fworks.html</xsl:param>
+        <xsl:param name="submitaction">http://localhost:8000/smct/submitorderform?client=h5&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsmct%2Fworks.html</xsl:param>
         <!-- className 'J_OXMod' required  -->
         <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart">
             <div class="J_list list"></div>
@@ -105,7 +105,7 @@
                                 <input type="text" name="name" placeholder="姓名"/>
                             </div>
                             <div class="formitem">
-                                <input type="telephone" name="phone" placeholder="电话"/>
+                                <input type="tel" name="phone" placeholder="电话"/>
                             </div>
                             <div class="formitem">
                                 <div class="select-group" data-toggle="distpicker" data-autoselect="3">
