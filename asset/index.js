@@ -62,21 +62,13 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
 
     var DeliveryAdmin = {
-        addAddress: function ($popup) {
-            var $f = $('form', $popup),
-                f = $f[0],
-                fields = 'name,phone,province,city,district,detail'.split(','),
-                addrObj = {},
-                addrToString = function () {
-                    if (/北京|天津|上海|重庆/.test(this.province)) {
-                        this.city = '';
-                    }
-                    return [this.name, '(' + this.phone + ')', this.province, this.city, this.district, this.detail].join(' ')
-                };
-            for (var i = 0, field; field = fields[i++];) {
-                addrObj[field] = f[field].value;
-            }
-            //console.log(addrObj);
+        fillAddress:function(addrObj){
+            var addrToString = function () {
+                if (/北京|天津|上海|重庆/.test(this.province)) {
+                    this.city = '';
+                }
+                return [this.name, '(' + this.phone + ')', this.province, this.city, this.district, this.detail].join(' ')
+            };
             $delivery.html(addrToString.call(addrObj));
             OrderModel.address = addrObj;
             DeliveryAdmin.getDeliveryFee(addrObj, function (r) {
@@ -89,6 +81,18 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
                 syncView('address');
             });
+        },
+        addAddress: function ($popup) {
+            var $f = $('form', $popup),
+                f = $f[0],
+                fields = 'name,phone,province,city,district,detail'.split(','),
+                addrObj = {};
+            for (var i = 0, field; field = fields[i++];) {
+                addrObj[field] = f[field].value;
+            }
+            //console.log(addrObj);
+            this.fillAddress(addrObj);
+
 
 
         },
@@ -99,6 +103,12 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
             }
             $.getJSON(apiHost+'/smct/getdeliveryfee?' + p.join('&') + '&callback=?', function (r) {
                 fn(r.data)
+            })
+        },
+        renderLastAddress:function(){
+            $.getJSON(apiHost+'/smct/getlastaddress?&callback=?', function (r) {
+
+                r && r.data && DeliveryAdmin.fillAddress(r.data);
             })
         }
     };
@@ -206,6 +216,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
                         return false;
                     });
+                    DeliveryAdmin.renderLastAddress();
                     //$('[data-toggle="distpicker"]').distpicker({});
 
                     // $('[data-toggle="distpicker"]').distpicker({});
@@ -247,7 +258,9 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         })
                         break
                 }
-            })
+            });
+
+
 
             //var f = document.getElementById('orderform');
 
