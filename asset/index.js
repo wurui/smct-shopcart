@@ -80,7 +80,13 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
             $delivery.html(addrToString.call(addrObj));
             OrderModel.address = addrObj;
             DeliveryAdmin.getDeliveryFee(addrObj, function (r) {
-                $deliveryfee.html(OrderModel.deliveryfee = (r - 0).toFixed(2));
+                OrderModel.deliveryfee = r - 0;
+                if(OrderModel.deliveryfee>0){
+                    $deliveryfee.html(OrderModel.deliveryfee.toFixed(2)).parent().parent().show();
+                }else{
+                    $deliveryfee.html('包邮').parent().parent().hide()
+                }
+
                 syncView('address');
             });
 

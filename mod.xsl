@@ -67,10 +67,10 @@
     <div class="formbar">
                 <label>收货地址:</label><span class="J_address address">添加地址</span>
             </div>
-            <div class="lrbar">
+            <div class="lrbar" style="display:none;">
                 <span>发货城市:杭州</span>
                 <span>
-                    运费: <span class="J_delieryfee price">--.--</span>
+                    运费: <span class="J_delieryfee price">包邮</span>
                 </span>
             </div>
             <hr/>
