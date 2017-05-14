@@ -1,5 +1,6 @@
 define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     var apiHost = 'http://www.shaomachetie.com';
+    var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
     if(document.documentElement.getAttribute('env')=='local') {
         apiHost = 'http://localhost:8000'
     }
@@ -114,26 +115,6 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     };
 
 
-    function render(r) {
-        if (r && r.data && r.data.length) {
-            var list = r.data;
-            var totalfee = 0;
-            for (var i = 0, n; n = list[i++];) {
-                totalfee += n.price;
-                Settings[n._id] = n.setting;
-            }
-
-            $('#list').html(Mustache.render(tpl, {
-                data: list,
-                totalfee: totalfee.toFixed(2)
-            }));
-            OrderModel.totalfee = totalfee;
-
-            // $('[data-toggle="distpicker"]').distpicker({});
-        } else {
-            $('#list').html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的<br/>赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制 &raquo;</a>').addClass('empty-order');
-        }
-    };
 
     return {
         init: function ($mod) {
@@ -153,7 +134,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         break
                 }
             });
-            $.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function render(r) {
+            $.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function(r) {
                 if (r && r.data && r.data.length) {
                     var list = r.data;
                     var totalfee = 0;
@@ -163,7 +144,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     }
                     $list.html(Mustache.render(tpl, {
                         data: list,
-                        totalfee: totalfee.toFixed(2)
+                        totalfee: totalfee.toFixed(2),
+                        paymethod:isInWeixin?'微信支付':'支付宝'
                     }));
                     OrderModel.totalfee = totalfee;
                     $delivery = $('.J_address', $list);

@@ -3,7 +3,9 @@
         <xsl:param name="submitaction">http://localhost:8000/smct/submitorderform?client=h5&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsmct%2Fworks.html</xsl:param>
         <!-- className 'J_OXMod' required  -->
         <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart">
-            <div class="J_list list"></div>
+            <div class="J_list list">
+                订单加载中...
+            </div>
             <form class="J_mainform" action="{$submitaction}" method="post"></form>
 
 
@@ -77,7 +79,7 @@
             <div class="lrbar">
                 <span>支付方式:
                     <select>
-                        <option>支付宝</option>
+                        <option>{{paymethod}}</option>
                     </select>
                 </span>
                 <span>
