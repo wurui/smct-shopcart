@@ -1,5 +1,5 @@
 define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
-    var apiHost = 'http://www.shaomachetie.com';
+    var apiHost = '//www.shaomachetie.com';
     var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
     if(document.documentElement.getAttribute('env')=='local') {
         apiHost = 'http://localhost:8000'
