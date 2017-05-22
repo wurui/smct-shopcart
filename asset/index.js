@@ -145,7 +145,17 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $list.html(Mustache.render(tpl, {
                         data: list,
                         totalfee: totalfee.toFixed(2),
-                        paymethod:isInWeixin?'微信支付':'支付宝'
+                        paymethod:isInWeixin?'微信支付':'支付宝',
+                        fullcarlogo:function(){
+
+                            var str=''
+                            if(/\d+/.test(this)){
+                                str='cars/'+this+'.png'
+                            }else{
+                                str='carlogo/'+this+'.jpg'
+                            }
+                            return 'http://www.shaomachetie.com/static/smct/img/'+str
+                        }
                     }));
                     OrderModel.totalfee = totalfee;
                     $delivery = $('.J_address', $list);
