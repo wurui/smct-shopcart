@@ -119,6 +119,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     return {
         init: function ($mod) {
 
+            var buildurl=$mod.attr('data-buildurl');
             tpl = $('.J_tpl', $mod).html();
 
             var $list = $('.J_list', $mod);
@@ -213,7 +214,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
                     // $('[data-toggle="distpicker"]').distpicker({});
                 } else {
-                    $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="builder.html">开始定制</a>').addClass('empty-order');
+                    $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="'+buildurl+'">开始定制</a>').addClass('empty-order');
                 }
             });
 
