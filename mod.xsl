@@ -76,6 +76,16 @@
                 </span>
             </div>
             <hr/>
+            {{#hongbao}}
+            <div class="lrbar">
+                <span>
+                    专享优惠:{{title}}
+                </span>
+                <span>
+                    - <span class="J_hongbao price">{{amount}}</span>
+                </span>
+            </div>
+            {{/hongbao}}
             <div class="lrbar">
                 <span>支付方式:
                     <select>

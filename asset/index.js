@@ -46,12 +46,12 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                 $totalfee.html(OrderModel.totalfee.toFixed(2));
                 OrderModel.deliveryfee=OrderModel.deliveryfee||0;
 
-                OrderModel.totalsum = OrderModel.totalfee - -OrderModel.deliveryfee;
+                OrderModel.totalsum = OrderModel.totalfee -OrderModel.hongbao - -OrderModel.deliveryfee;
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
 
                 break
             case 'address':
-                OrderModel.totalsum = OrderModel.totalfee - -OrderModel.deliveryfee;
+                OrderModel.totalsum = OrderModel.totalfee-OrderModel.hongbao - -OrderModel.deliveryfee;
 
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
                 $btpay.removeAttr('disabled')
@@ -118,6 +118,19 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
 
     return {
         init: function ($mod) {
+            var hongbao=function(str){
+                if(!str){
+                    OrderModel.hongbao=0;
+                    return
+                }
+                var split=str.split('#');
+                OrderModel.hongbao=split[1]-0;
+                return {
+                    title:split[0],
+                    amount:split[1]
+                }
+            }(localStorage.getItem('hongbao'));
+
 
             var buildurl=$mod.attr('data-buildurl');
             tpl = $('.J_tpl', $mod).html();
@@ -147,6 +160,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         data: list,
                         totalfee: totalfee.toFixed(2),
                         paymethod:isInWeixin?'微信支付':'支付宝',
+                        hongbao:hongbao,
                         fullcarlogo:function(){
 
                             var str=''
@@ -193,7 +207,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             totalcount: $totalcount.html() - 0,
                             totalfee: $totalfee.html() - 0,
                             deliveryfee: OrderModel.deliveryfee,
-                            totalsum: OrderModel.totalsum
+                            totalsum: OrderModel.totalsum,
+                            hongbao: OrderModel.hongbao
                             //encoded_codes:encoded_codes
                         };
                         for (var k in smtData) {
