@@ -11,5 +11,9 @@
         <icon>//oxm1.cc/img/app_default.png</icon>
     </p>
     <data>
+        <address>
+            <province>浙江省</province>
+            <city>杭州市</city>
+        </address>
     </data>
 </root>

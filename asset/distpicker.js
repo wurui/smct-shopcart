@@ -5,10 +5,15 @@ define(['require','oxjs'],function(require,OXJS){
 
     var renderSelect=function(sel,data){
         sel.options.length=0;
+        var val=sel.getAttribute('data-value');
         for(var k in data){
-            var opt=new Option(data[k])
+            var txt=data[k],
+                opt=new Option(txt)
             opt.code=k;
             sel.options[sel.options.length]=opt;
+            if(val && val ==txt){
+                opt.selected=true;
+            }
         }
     };
     return {
@@ -38,6 +43,7 @@ define(['require','oxjs'],function(require,OXJS){
             provinceEl.addEventListener('change',onProvinceChanged,false)
             cityEl.addEventListener('change',onCityChanged,false)
             //districtEl.addEventListener('change',function(){},false);
+
             require(['./distdata'],function(distdata){
                 Distdata=distdata;
                 var province=distdata[100000];

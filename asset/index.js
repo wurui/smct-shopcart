@@ -2,7 +2,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     var apiHost = '//www.shaomachetie.com';
     var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
     if(document.documentElement.getAttribute('env')=='local') {
-        //apiHost = 'http://localhost:8000'
+        apiHost = 'http://localhost:8000'
     }
 
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;

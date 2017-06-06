@@ -97,7 +97,7 @@
             </script>
             <div class="J_popup fullpopup">
                 <h3 class="title">
-                    <span class="rightbtn J_close">关闭</span>
+                    <button type="button" class="rightbtn J_close">关闭</button>
                     地址管理
                 </h3>
                 <div class="content">
@@ -112,10 +112,10 @@
                             </div>
                             <div class="formitem">
                                 <div class="select-group" data-toggle="distpicker" data-autoselect="3">
-                                    <select class="J_province" name="province">
+                                    <select class="J_province" name="province" data-value="{data/address/province}">
                                         <option>省</option>
                                     </select>
-                                    <select class="J_city" name="city">
+                                    <select class="J_city" name="city" data-value="{data/address/city}">
                                         <option>市</option>
                                     </select>
                                     <select class="J_district" name="district">
