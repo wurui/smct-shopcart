@@ -67,7 +67,7 @@
         </span>
     </div>
     <div class="formbar">
-                <label>收货地址:</label><span class="J_address address">添加地址</span>
+                <label>收货地址:</label><span class="J_address address noaddress">添加地址</span>
             </div>
             <div class="lrbar" style="display:none;">
                 <span>发货城市:杭州</span>
@@ -99,6 +99,7 @@
             <div class="lrbar">
                 <span></span>
                 <span>
+                    <em class="err-tip J_errtip">请添加收货地址&nbsp;&nbsp;&nbsp;&nbsp;<br/></em>
                     <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
                 </span>
             </div>

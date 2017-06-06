@@ -54,7 +54,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                 OrderModel.totalsum = OrderModel.totalfee-OrderModel.hongbao - -OrderModel.deliveryfee;
 
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
-                $btpay.removeAttr('disabled')
+                $btpay.removeAttr('disabled').siblings('.J_errtip').remove();
                 break
             case 'material':
                 break
@@ -70,7 +70,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                 }
                 return [this.name, '(' + this.phone + ')', this.province, this.city, this.district, this.detail].join(' ')
             };
-            $delivery.html(addrToString.call(addrObj));
+            $delivery.html(addrToString.call(addrObj)).removeClass('noaddress');
             OrderModel.address = addrObj;
             DeliveryAdmin.getDeliveryFee(addrObj, function (r) {
                 OrderModel.deliveryfee = r - 0;
@@ -107,6 +107,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
             })
         },
         renderLastAddress:function(){
+            //目前绝大多数都是新来用户,唉~
             $.getJSON(apiHost+'/smct/getlastaddress?&callback=?', function (r) {
 
                 r && r.data && DeliveryAdmin.fillAddress(r.data);

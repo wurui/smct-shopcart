@@ -318,6 +318,10 @@
   margin-right: -9px;
   transform: rotate(45deg);
 }
+.oxmod-smct-shopcart .address.noaddress {
+  color: #09c;
+  font-weight: 400;
+}
 .oxmod-smct-shopcart .fullpopup {
   background-color: #fff;
   position: fixed;
@@ -386,6 +390,13 @@
 .oxmod-smct-shopcart .address-form .select-group select {
   height: 30px;
   width: 32%;
+  text-align: center;
+}
+.oxmod-smct-shopcart .err-tip {
+  color: #f00;
+  font-style: normal;
+  font-size: 13px;
+  width: 120px;
   text-align: center;
 }
 body > .toast {
