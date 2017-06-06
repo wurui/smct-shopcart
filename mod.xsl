@@ -9,7 +9,6 @@
             </div>
             <form class="J_mainform" action="{$submitaction}" method="post"></form>
 
-
             <script type="text/tpl" class="J_tpl"><![CDATA[
             <table class="order-table" cellpadding="0" cellspacing="0">
                 <thead>
