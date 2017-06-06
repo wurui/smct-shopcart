@@ -326,8 +326,9 @@
   width: 100%;
   height: 100%;
   z-index: 9;
-  transition: transform .3s;
+  transition: all .3s;
   transform: translate(0, 100%);
+  visibility: hidden;
 }
 .oxmod-smct-shopcart .fullpopup .title {
   font-size: 16px;
@@ -348,6 +349,7 @@
 .oxmod-smct-shopcart .fullpopup.show {
   box-shadow: 1px 1px 10px #000;
   transform: translate(0, 0);
+  visibility: visible;
 }
 .oxmod-smct-shopcart .address-form {
   padding: 10px;
