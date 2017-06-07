@@ -208,8 +208,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             totalcount: $totalcount.html() - 0,
                             totalfee: $totalfee.html() - 0,
                             deliveryfee: OrderModel.deliveryfee,
-                            totalsum: OrderModel.totalsum,
-                            hongbao: OrderModel.hongbao
+                            totalsum: OrderModel.totalsum.toFixed(2) -0,
+                            hongbao: OrderModel.hongbao.toFixed(2) -0
                             //encoded_codes:encoded_codes
                         };
                         for (var k in smtData) {
