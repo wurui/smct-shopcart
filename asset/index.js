@@ -5,7 +5,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     //手机QQ,腾读新闻 QQNews/5.3.6 (iPhone; iOS 10.3.2; Scale/2.00)
     //return document.body.innerHTML=navigator.userAgent
     if(document.documentElement.getAttribute('env')=='local') {
-        apiHost = 'http://localhost:8000'
+        apiHost = 'http://192.168.1.103:8000'
     }
 
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;
@@ -49,7 +49,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                 $totalfee.html(OrderModel.totalfee.toFixed(2));
                 OrderModel.deliveryfee=OrderModel.deliveryfee||0;
 
-                OrderModel.totalsum = OrderModel.totalfee -OrderModel.hongbao - -OrderModel.deliveryfee;
+                OrderModel.totalsum = Math.max(0,OrderModel.totalfee -OrderModel.hongbao - -OrderModel.deliveryfee);
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
 
                 break
@@ -245,7 +245,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         syncView('amount');
                         break
                 }
-            }).on('tap', function (e) {
+            }).on('click', function (e) {
                 var $tar = $(e.target);
                 switch (true) {
                     case $tar.hasClass('J_amountUp'):
@@ -257,10 +257,13 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         var $input = $tar.siblings('.J_number');
                         $input.val(Math.max($input.val() - 1, 0))
                         syncView('amount');
+                        return false
                         break
                     case $tar.hasClass('J_address'):
 
                         $popup.addClass('show');
+                        //alert($popup[0].className)
+
                         require(['./distpicker'], function (distpicker) {
                             distpicker.init({
                                 provinceEl: $('.J_province', $popup)[0],
@@ -269,8 +272,10 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             });
 
                         })
+                        return false
                         break
                 }
+
             });
 
 
