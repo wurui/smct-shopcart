@@ -163,7 +163,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $list.html(Mustache.render(tpl, {
                         data: list,
                         totalfee: totalfee.toFixed(2),
-                        paymethod:isInWeixin?['微信支付']:(isInQQ?['微信支付','支付宝']:['支付宝','微信支付']),
+                        paymethod:(isInWeixin||isInQQ)?['微信支付']:['支付宝','微信支付'],
                         hongbao:hongbao,
                         fullcarlogo:function(){
 
