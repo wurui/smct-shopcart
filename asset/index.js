@@ -1,6 +1,9 @@
 define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     var apiHost = '//www.shaomachetie.com';
     var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
+    var isInQQ=/QQ/.test(navigator.userAgent);
+    //手机QQ,腾读新闻 QQNews/5.3.6 (iPhone; iOS 10.3.2; Scale/2.00)
+    //return document.body.innerHTML=navigator.userAgent
     if(document.documentElement.getAttribute('env')=='local') {
         apiHost = 'http://localhost:8000'
     }
@@ -160,7 +163,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $list.html(Mustache.render(tpl, {
                         data: list,
                         totalfee: totalfee.toFixed(2),
-                        paymethod:isInWeixin?'微信支付':'支付宝',
+                        paymethod:isInWeixin?['微信支付']:(isInQQ?['微信支付','支付宝']:['支付宝','微信支付']),
                         hongbao:hongbao,
                         fullcarlogo:function(){
 
@@ -181,7 +184,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $totalfee = $('.J_totalfee', $list);
 
                     var loading = false;
-                    $btpay = $('.J_btpay', $list).on('click', function () {
+                    $btpay = $('.J_btpay', $list).on('tap', function () {
                         if (loading) {
                             $btpay.addClass('loading')
                             return false
@@ -209,7 +212,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             totalfee: $totalfee.html() - 0,
                             deliveryfee: OrderModel.deliveryfee,
                             totalsum: OrderModel.totalsum.toFixed(2) -0,
-                            hongbao: OrderModel.hongbao.toFixed(2) -0
+                            hongbao: OrderModel.hongbao.toFixed(2) -0,
+                            paymethod:$('.J_paymethod',$list).val()
                             //encoded_codes:encoded_codes
                         };
                         for (var k in smtData) {
@@ -241,7 +245,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         syncView('amount');
                         break
                 }
-            }).on('click', function (e) {
+            }).on('tap', function (e) {
                 var $tar = $(e.target);
                 switch (true) {
                     case $tar.hasClass('J_amountUp'):

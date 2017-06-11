@@ -349,6 +349,8 @@
   font-size: 12px;
   float: right;
   margin-top: 3px;
+  background-color: transparent;
+  border: none;
 }
 .oxmod-smct-shopcart .fullpopup.show {
   box-shadow: 1px 1px 10px #000;

@@ -87,10 +87,8 @@
             </div>
             {{/hongbao}}
             <div class="lrbar">
-                <span>支付方式:
-                    <select>
-                        <option>{{paymethod}}</option>
-                    </select>
+                <span>
+                    支付方式:<select class="J_paymethod">{{#paymethod}}<option>{{.}}</option>{{/paymethod}}</select>
                 </span>
                 <span>
                     实付金额: <big class="J_totalsum price">--.--</big>
