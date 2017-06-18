@@ -27,7 +27,7 @@
                             <div class="card-header">{{setting.text1}}</div>
                             <div class="card-body tpl tpl-{{setting.tpl}}">
                                 <div class="central">
-                                    {{#setting.carlogo}}<img src="{{fullcarlogo}}"/>{{/setting.carlogo}}
+                                    {{#setting.carlogo}}<img src="{{setting.fullcarlogo}}"/>{{/setting.carlogo}}
                                 </div>
                                 <img src="http://i.oxm1.cc/uploads/git/wurui/img/2ahkwkkveTj1rgh0ueRlcquA5vz-1000.png" class="qrcode"/>
 
@@ -88,7 +88,7 @@
             {{/hongbao}}
             <div class="lrbar">
                 <span>
-                    支付方式:<select class="J_paymethod">{{#paymethod}}<option>{{.}}</option>{{/paymethod}}</select>
+                    支付方式:<select class="J_paymethod"></select>
                 </span>
                 <span>
                     实付金额: <big class="J_totalsum price">--.--</big>

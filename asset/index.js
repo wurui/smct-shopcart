@@ -2,13 +2,14 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     var apiHost = '//www.shaomachetie.com';
     var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
     var isInQQ=/QQ/.test(navigator.userAgent);
+
     //手机QQ,腾读新闻 QQNews/5.3.6 (iPhone; iOS 10.3.2; Scale/2.00)
     //return document.body.innerHTML=navigator.userAgent
     if(document.documentElement.getAttribute('env')=='local') {
         apiHost = 'http://192.168.1.103:8000'
     }
 
-    var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum;
+    var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;
     var queryString = function (query) {
         var search = window.location.search + '';
         if (search.charAt(0) != '?') {
@@ -118,6 +119,17 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
         }
     };
 
+    var renderPaymethod=function(){
+        $.getJSON(apiHost+'/smct/getpaymethods?&callback=?', function (r) {
+            var paymethods=(r && r.data)||[{value:'alipay',text:'支付宝'}]
+            var sel = $paymethod[0];
+            sel.options.length = 0;
+            for (var i = 0, n; n = paymethods[i++];) {
+                sel.options[sel.options.length] = new Option(n.text, n.value)
+            }
+        })
+    };
+
 
 
     return {
@@ -163,18 +175,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $list.html(Mustache.render(tpl, {
                         data: list,
                         totalfee: totalfee.toFixed(2),
-                        paymethod:(isInWeixin||isInQQ)?['微信支付']:['支付宝','微信支付'],
-                        hongbao:hongbao,
-                        fullcarlogo:function(){
-
-                            var str=''
-                            if(/\d+/.test(this)){
-                                str='cars/'+this+'.png'
-                            }else{
-                                str='carlogo/'+this+'.jpg'
-                            }
-                            return 'http://v.oxm1.cc/'+str
-                        }
+                       // paymethod:renderPaymethod(),
+                        hongbao:hongbao
                     }));
                     OrderModel.totalfee = totalfee;
                     $delivery = $('.J_address', $list);
@@ -182,6 +184,8 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     $totalsum = $('.J_totalsum', $list)
                     $totalcount = $('.J_totalcount', $list)
                     $totalfee = $('.J_totalfee', $list);
+                    $paymethod=$('.J_paymethod',$list);
+                    renderPaymethod();
 
                     var loading = false;
                     $btpay = $('.J_btpay', $list).on('tap', function () {
@@ -213,7 +217,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             deliveryfee: OrderModel.deliveryfee,
                             totalsum: OrderModel.totalsum.toFixed(2) -0,
                             hongbao: OrderModel.hongbao.toFixed(2) -0,
-                            paymethod:$('.J_paymethod',$list).val()
+                            paymethod:$paymethod.val()
                             //encoded_codes:encoded_codes
                         };
                         for (var k in smtData) {
