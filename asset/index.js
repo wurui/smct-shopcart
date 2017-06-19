@@ -188,15 +188,29 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                     renderPaymethod();
 
                     var loading = false;
-                    $btpay = $('.J_btpay', $list).on('tap', function () {
-                        if (loading) {
-                            $btpay.addClass('loading')
+                    $btpay = $('.J_btpay', $list).on('click', function () {
+                        if (loading ||this.disabled) {
+
                             return false
                         }
+
                         if ($totalcount.html() == 0) {
                             return alert('请至少添加一个商品')
                         }
+                        if(!OrderModel.address){
+                            return alert('请填写地址')
+                        }
+                        if(!OrderModel.address.detail){
+                            return alert('请填写详细地址')
+                        }
+                        if(!OrderModel.address.name){
+                            return alert('请填写收货人姓名')
+                        }
+                        if(!/^(1\d{10}|(\d{3,4}\-)?\d{7,8}(\-\d+)?)$/.test(OrderModel.address.phone)){
+                            return alert('请填写收货人电话')
+                        }
                         loading = true;
+                        $btpay.addClass('loading')
                         var pack = [];
                         $('tr[data-id]').each(function (i, n) {
                             var $n = $(n);
