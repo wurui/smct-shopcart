@@ -6,7 +6,7 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
     //手机QQ,腾读新闻 QQNews/5.3.6 (iPhone; iOS 10.3.2; Scale/2.00)
     //return document.body.innerHTML=navigator.userAgent
     if(document.documentElement.getAttribute('env')=='local') {
-        apiHost = 'http://192.168.1.103:8000'
+        //apiHost = 'http://192.168.1.103:8000'
     }
 
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;

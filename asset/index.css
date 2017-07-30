@@ -96,8 +96,8 @@
 }
 .oxmod-smct-shopcart .preview {
   border-radius: 40px;
-  width: 500px;
-  height: 500px;
+  width: 490px;
+  height: 560px;
   margin: 10px auto;
   box-shadow: 0px 0px 5px #999;
   overflow: hidden;
@@ -107,8 +107,7 @@
 }
 .oxmod-smct-shopcart .qrcode {
   margin-top: 40px;
-  width: 280px;
-  height: 280px;
+  width: 320px;
   padding: 5px;
   border: solid 1px #ccc;
 }
@@ -116,21 +115,21 @@
   color: #fff;
   font-size: 85px;
   letter-spacing: 5px;
-  height: 120px;
-  line-height: 120px;
+  height: 140px;
+  line-height: 140px;
   font-family: '黑体', sans-serif;
   font-weight: 700;
-  transform: scale(1, 1.2);
   text-shadow: 5px -5px 1px #444;
+  transform: scale(1, 1.2);
   overflow: hidden;
 }
 .oxmod-smct-shopcart .card-body {
   background-color: #fff;
-  height: 340px;
+  height: 380px;
 }
 .oxmod-smct-shopcart .card-footer {
   height: 41px;
-  line-height: 40px;
+  line-height: 30px;
   font-size: 18px;
   color: #666;
   background-color: #fff;
@@ -138,22 +137,10 @@
   margin-top: -1px;
   /**解决缩放有条线的问题*/
 }
-.oxmod-smct-shopcart .snapshot {
-  width: 150px;
-  height: 155px;
-  margin-bottom: 5px;
-  margin-top: 10px;
-  border-radius: 10px;
-}
-.oxmod-smct-shopcart .snapshot > .preview {
-  transform: scale(0.3);
-  transform-origin: 0 0;
-  margin: 0;
-}
 .oxmod-smct-shopcart .central {
   position: absolute;
   margin-left: 210px;
-  margin-top: 150px;
+  margin-top: 170px;
   width: 78px;
   height: 78px;
   text-align: center;
@@ -169,6 +156,18 @@
   vertical-align: middle;
   background-color: #fff;
   border-radius: 5px;
+}
+.oxmod-smct-shopcart .snapshot {
+  width: 150px;
+  height: 155px;
+  margin-bottom: 5px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.oxmod-smct-shopcart .snapshot > .preview {
+  transform: scale(0.25);
+  transform-origin: 0 0;
+  margin: 0;
 }
 .oxmod-smct-shopcart .bt-order {
   background-color: #f60;

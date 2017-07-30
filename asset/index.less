@@ -122,56 +122,7 @@
     background-color: cadetblue;
   }
 
-  .preview {
-
-    border-radius: 40px;
-    width: 500px;
-    height: 500px;
-    margin: 10px auto;
-    box-shadow: 0px 0px 5px #999;
-    overflow: hidden;
-    border: solid 1px #ccc;
-    font-family: sans-serif;
-    text-align: center;
-  }
-
-  .preview .tpl {
-  }
-
-  .qrcode {
-    margin-top: 40px;
-    width: 280px;
-    height: 280px;
-    padding: 5px;
-    border: solid 1px #ccc;
-  }
-
-  .card-header {
-    color: #fff;
-    font-size: 85px;
-    letter-spacing: 5px;
-    height: 120px;
-    line-height: 120px;
-    font-family: '黑体', sans-serif;
-    font-weight: 700;
-    transform: scale(1,1.2);
-    text-shadow: 5px -5px 1px #444;
-    overflow: hidden;
-
-  }
-  .card-body {
-    background-color: #fff;
-    height: 340px;
-  }
-  .card-footer {
-    height: 41px;
-    line-height: 40px;
-    font-size: 18px;
-    color: #666;
-    background-color: #fff;
-    letter-spacing: 1px;
-    margin-top: -1px; /**解决缩放有条线的问题*/
-  }
+  @import "card";
 
   .snapshot {
     width: 150px;
@@ -182,36 +133,10 @@
   }
 
   .snapshot > .preview {
-    transform: scale(.3);
+    transform: scale(.25);
     transform-origin: 0 0;
     margin: 0;
   }
-
-  .central {
-    position: absolute;
-    margin-left: 210px;
-    margin-top: 150px;
-    width: 78px;
-    height: 78px;
-
-    text-align: center;
-    line-height: 78px;
-    overflow: hidden;
-
-  }
-  .central-bg {
-    background-color: #fff;
-  }
-  .central img {
-    width: 78px;
-    height: 78px;
-    vertical-align: middle;
-    background-color: #fff;
-    border-radius: 5px;
-  }
-
-
-
 
   .bt-order {
     background-color: #f60;
