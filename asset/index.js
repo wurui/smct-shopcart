@@ -1,4 +1,4 @@
-define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
+define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustache,OXJS) {
     var apiHost = '//www.shaomachetie.com';
     var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
     var isInQQ=/QQ/.test(navigator.userAgent);
@@ -130,10 +130,47 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
         })
     };
 
+    var param2settings=function(param){
+        if(!param)return {};
+        var obj={};
+        for(var i= 0,n;n=param[i++];){
+            obj[n.label]= n.value;
+        }//console.log(obj)
+        return obj;
+    };
+
+    var data2order=function(data){
+        var bill=[];
+        if(data.deliveryfee) {
+            bill.push({
+                item: 'deliveryfee',
+                value: data.deliveryfee
+            });
+        }
+        if(data.hongbao) {
+            bill.push({
+                item: 'hongbao',
+                value: -data.hongbao
+            })
+        }
+        var order={
+            title:'定制版扫码车贴'+data.totalcount+'张',
+            pack:data.pack,
+            delivery:data.delivery,
+            totalcount:data.totalcount,
+            totalfee:data.totalsum,
+            bill:JSON.stringify(bill)
+            //seller:
+        };
+
+        return order;
+    }
+
 
 
     return {
         init: function ($mod) {
+            var uid=$mod.attr('data-uid')
             var hongbao=function(str){
                 if(!str){
                     OrderModel.hongbao=0;
@@ -164,9 +201,63 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         break
                 }
             });
-            $.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function(r) {
-                if (r && r.data && r.data.length) {
-                    var list = r.data;
+            var productRest = OXJS.useREST('product/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');;//md5('saomachetie')
+            var customizeRest = OXJS.useREST('customize/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');;//md5('saomachetie')
+
+            var orderRest=OXJS.useREST('order/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');
+            var getList=function(fn){
+                customizeRest.get({ids:bids},function(r){
+                    if(r && r.length){
+                        var tids=[],
+                            customizes= r,
+                            obj={};
+                        for (var i = 0, customize; customize = customizes[i++];) {
+                            if(tids.indexOf(customize.tid)==-1) {
+                                tids.push(customize.tid);//不同的customize可能对应同一tid
+                            }
+                            //obj[n.tid]= n;
+                        }
+                        productRest.get({ids:tids.join(',')},function(r){
+
+                            if(r && r.length){
+                                var customProds=[];
+
+                                for (var i = 0, customize; customize = customizes[i++];) {
+
+
+                                    for (var j = 0, n; n = r[j++];) {
+                                        if(customize.tid == n._id){
+
+                                            customProds.push({
+                                                _id: customize._id,
+                                                product_id: n._id,
+                                                price:n.price|| n.orig_price,
+                                                setting:param2settings(customize.props)
+                                            })
+                                        }
+
+                                    }
+
+                                }
+
+                                fn(customProds);
+                            }else{
+                                fn()
+                            }
+                        })
+                    }else{
+                        fn()
+                    }
+
+
+                })
+            };
+           // customizeRest.get({ids:bids},function(r){
+            getList(function(r){
+                //productRest.get({ids})
+            //$.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function(r) {
+                if (r && r.length) {
+                    var list = r;
                     var totalfee = 0;
                     for (var i = 0, n; n = list[i++];) {
                         totalfee += n.price;
@@ -176,7 +267,17 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         data: list,
                         totalfee: totalfee.toFixed(2),
                        // paymethod:renderPaymethod(),
-                        hongbao:hongbao
+                        hongbao:hongbao,
+                        fullcarlogo :function () {
+
+                            var str = ''
+                            if (/\d+/.test(this)) {
+                                str = 'cars/' + this + '.png'
+                            } else {
+                                str = 'carlogo/' + this + '.jpg'
+                            }
+                            return 'http://v.oxm1.cc/' + str
+                        }
                     }));
                     OrderModel.totalfee = totalfee;
                     $delivery = $('.J_address', $list);
@@ -215,15 +316,22 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                         $('tr[data-id]').each(function (i, n) {
                             var $n = $(n);
                             pack.push({
-                                bid: $n.attr('data-id'),
+                                item: $n.attr('data-product-id'),
                                 amount: $('.J_number', $n).val(),
-                                material: $('.J_material', $n).val()
+                                customize:$n.attr('data-id')
+                                //material: $('.J_material', $n).val()
+                                /**再多个性化定制,后面再考虑,要和商品价格打通
+                                不行的话,此处再根据不同的如材质这样的特性来关联购买的商品,但事先肯定也必有一个更抽象的商品在,不然定制对象是什么呢?
+                                 还是通盘考虑先定制再生成商品这种状态,就像吃麻辣烫下单过程一样
+                                 不然就得再新生成一个定制表,然后购买最新这个
+                                 */
                             })
                         });
 
                         var mainform = $('.J_mainform', $mod)[0];
                         var smtData = {
                             pack: JSON.stringify(pack),
+                            //detail: JSON.stringify(pack),
                             delivery: JSON.stringify(OrderModel.address),
                             //codes: JSON.stringify(codes),
                             totalcount: $totalcount.html() - 0,
@@ -231,9 +339,32 @@ define(['require', 'zepto', 'mustache'], function (require, undef, Mustache) {
                             deliveryfee: OrderModel.deliveryfee,
                             totalsum: OrderModel.totalsum.toFixed(2) -0,
                             hongbao: OrderModel.hongbao.toFixed(2) -0,
-                            paymethod:$paymethod.val()
+                            paymethod:$paymethod.val()//paymethod在新的数据源下就不在这里设置了
                             //encoded_codes:encoded_codes
                         };
+
+                        try {
+
+                            orderRest.post(data2order(smtData), function (r) {
+
+                                if(r.code==0){
+                                    var new_id= r.message;
+                                    //todo: 去支付
+                                }else{
+                                    OXJS.toast('ERROR['+ r.message +']')
+                                }
+                                console.log(r)
+
+                            })
+                        }catch(e){
+                            OXJS.toast('Catch Error:'+e.toString())
+                        }
+
+                        return false;
+
+                        //orderRest.post({})
+
+
                         for (var k in smtData) {
                             var hid = document.createElement('input')
                             hid.type = 'hidden';

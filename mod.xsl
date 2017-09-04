@@ -3,7 +3,7 @@
         <xsl:param name="submitaction">http://localhost:8000/smct/submitorderform?client=h5&amp;redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fsmct%2Fworks.html</xsl:param>
         <xsl:param name="buildurl"/>
         <!-- className 'J_OXMod' required  -->
-        <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-buildurl="{$buildurl}">
+        <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-buildurl="{$buildurl}" data-uid="{login/uid}">
             <div class="J_list list">
                 订单加载中...
             </div>
@@ -20,14 +20,14 @@
                 </thead>
                 <tbody>
                     {{#data}}
-                    <tr data-id="{{_id}}">
+                    <tr data-id="{{_id}}" data-product-id="{{product_id}}">
                         <td width=160>
                         <div class="snapshot">
                             <div class="preview bgcolor-{{setting.bgcolor}}"">
                             <div class="card-header">{{setting.text1}}</div>
                             <div class="card-body tpl tpl-{{setting.tpl}}">
                                 <div class="central">
-                                    {{#setting.carlogo}}<img src="{{setting.fullcarlogo}}"/>{{/setting.carlogo}}
+                                    {{#setting.carlogo}}<img src="{{fullcarlogo}}"/>{{/setting.carlogo}}
                                 </div>
                                 <img src="http://i.oxm1.cc/uploads/git/wurui/img/2ahkwkkveTj1rgh0ueRlcquA5vz-1000.png" class="qrcode"/>
 
