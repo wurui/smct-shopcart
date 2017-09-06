@@ -170,7 +170,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
 
     return {
         init: function ($mod) {
-            var uid=$mod.attr('data-uid')
+            var uid=$mod.attr('data-uid'),payurl=$mod.attr('data-payurl');
             var hongbao=function(str){
                 if(!str){
                     OrderModel.hongbao=0;
@@ -350,6 +350,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                                 if(r.code==0){
                                     var new_id= r.message;
                                     //todo: 去支付
+                                    location.href=payurl+'?oid='+new_id
                                 }else{
                                     OXJS.toast('ERROR['+ r.message +']')
                                 }
