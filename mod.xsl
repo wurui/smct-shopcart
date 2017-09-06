@@ -10,7 +10,7 @@
             <div class="J_list list">
                 订单加载中...
             </div>
-            <form class="J_mainform" action="{$submitaction}" method="post"></form>
+            <form class="J_mainform" method="post"></form>
 
             <script type="text/tpl" class="J_tpl"><![CDATA[
             <table class="order-table" cellpadding="0" cellspacing="0">
