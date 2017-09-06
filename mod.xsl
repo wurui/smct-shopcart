@@ -6,7 +6,7 @@
         <xsl:param name="buildurl"/>
         <xsl:param name="payurl"/>
         <!-- className 'J_OXMod' required  -->
-        <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-buildurl="{$buildurl}" data-uid="{login/uid}">
+        <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-payurl="{$payurl}" data-buildurl="{$buildurl}" data-uid="{login/uid}">
             <div class="J_list list">
                 订单加载中...
             </div>
