@@ -8,7 +8,33 @@
         <!-- className 'J_OXMod' required  -->
         <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-payurl="{$payurl}" data-buildurl="{$buildurl}" data-uid="{login/uid}">
             <div class="J_list list">
-                订单加载中...
+                <div class="J_render">
+                    <br/><br/>
+                    订单加载中...
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                </div>
+                <div class="lrbar">
+                    <span>
+                        支付方式:
+                        <select class="J_paymethod">
+                            <xsl:for-each select="data/options/i">
+                                <option value="{value}"><xsl:value-of select="text"/></option>
+                            </xsl:for-each>
+                        </select>
+                    </span>
+                    <span>
+                        实付金额: <big class="J_totalsum price">--.--</big>
+                    </span>
+                </div>
+            </div>
+
+            <div class="lrbar">
+                <span></span>
+                <span>
+                    <em class="err-tip J_errtip">请添加收货地址&#160;&#160;&#160;&#160;<br/></em>
+                    <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
+                </span>
             </div>
             <form class="J_mainform" method="post"></form>
 
@@ -89,21 +115,7 @@
                 </span>
             </div>
             {{/hongbao}}
-            <div class="lrbar">
-                <span>
-                    支付方式:<select class="J_paymethod"></select>
-                </span>
-                <span>
-                    实付金额: <big class="J_totalsum price">--.--</big>
-                </span>
-            </div>
-            <div class="lrbar">
-                <span></span>
-                <span>
-                    <em class="err-tip J_errtip">请添加收货地址&nbsp;&nbsp;&nbsp;&nbsp;<br/></em>
-                    <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
-                </span>
-            </div>
+
 ]]>
             </script>
             <div class="J_popup fullpopup">

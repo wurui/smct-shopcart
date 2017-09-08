@@ -120,6 +120,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
     };
 
     var renderPaymethod=function(){
+        /*
         $.getJSON(apiHost+'/smct/getpaymethods?&callback=?', function (r) {
             var paymethods=(r && r.data)||[{value:'alipay',text:'支付宝'}]
             var sel = $paymethod[0];
@@ -128,6 +129,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 sel.options[sel.options.length] = new Option(n.text, n.value)
             }
         })
+        */
     };
 
     var param2settings=function(param){
@@ -263,7 +265,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                         totalfee += n.price;
                         Settings[n._id] = n.setting;
                     }
-                    $list.html(Mustache.render(tpl, {
+                    $('.J_render',$list).html(Mustache.render(tpl, {
                         data: list,
                         totalfee: totalfee.toFixed(2),
                        // paymethod:renderPaymethod(),
@@ -350,7 +352,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                                 if(r.code==0){
                                     var new_id= r.message;
                                     //todo: 去支付
-                                    location.href=payurl+'?oid='+new_id
+                                    location.href=payurl.replace(/\{oid\}/g,new_id).replace(/\{paymethod\}/g,smtData.paymethod);//+'?oid='+new_id
                                 }else{
                                     OXJS.toast('ERROR['+ r.message +']')
                                 }

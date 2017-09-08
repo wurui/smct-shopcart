@@ -19,5 +19,25 @@
             <province>浙江省</province>
             <city>杭州市</city>
         </address>
+        <options.test>
+            <i>
+                <text>支付宝1</text>
+                <value>alipay</value>
+            </i>
+            <i>
+                <text>微信支付1</text>
+                <value>weixinh5</value>
+            </i>
+        </options.test>
+        <options>
+            <i>
+                <text>支付宝</text>
+                <value>alipay</value>
+            </i>
+            <i>
+                <text>微信支付</text>
+                <value>weixinh5</value>
+            </i>
+        </options>
     </data>
 </root>
