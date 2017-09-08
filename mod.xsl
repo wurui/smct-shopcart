@@ -27,15 +27,16 @@
                         实付金额: <big class="J_totalsum price">--.--</big>
                     </span>
                 </div>
+                <div class="lrbar">
+                    <span></span>
+                    <span>
+                        <em class="err-tip J_errtip">请添加收货地址&#160;&#160;&#160;&#160;<br/></em>
+                        <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
+                    </span>
+                </div>
             </div>
 
-            <div class="lrbar">
-                <span></span>
-                <span>
-                    <em class="err-tip J_errtip">请添加收货地址&#160;&#160;&#160;&#160;<br/></em>
-                    <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
-                </span>
-            </div>
+
             <form class="J_mainform" method="post"></form>
 
             <script type="text/tpl" class="J_tpl"><![CDATA[
