@@ -203,10 +203,10 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                         break
                 }
             });
-            var productRest = OXJS.useREST('product/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');;//md5('saomachetie')
-            var customizeRest = OXJS.useREST('customize/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');;//md5('saomachetie')
+            var productRest = OXJS.useREST('product').setDevHost('http://dev.openxsl.com/');;//md5('saomachetie')
+            var customizeRest = OXJS.useREST('customize').setDevHost('http://dev.openxsl.com/');;//md5('saomachetie')
 
-            var orderRest=OXJS.useREST('order/e0ee59439b39fcc3/u/' + encodeURIComponent(uid)).setDevHost('http://local.openxsl.com/');
+            var orderRest=OXJS.useREST('order').setDevHost('http://dev.openxsl.com/');
             var getList=function(fn){
                 customizeRest.get({ids:bids},function(r){
                     if(r && r.length){
