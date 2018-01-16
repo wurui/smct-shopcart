@@ -44,14 +44,10 @@
 
         <product-list>
             <i>
-                <id>1234</id>
-                <title>扫码车贴-22</title>
-                <price>15.22</price>
-            </i>
-            <i>
                 <id>28288282</id>
                 <title>扫码车贴-定制版</title>
                 <price>12.22</price>
+                <owner>git/wurui</owner>
             </i>
         </product-list>
         <customize>

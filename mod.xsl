@@ -30,8 +30,13 @@
                             <xsl:variable select="tid" name="product_id"/>
                             <xsl:variable select="$products[id = $product_id]" name="product"/>
                             
-                            <tr data-id="{_id}" data-product-id="{tid}">
+                            <tr data-id="{_id}" data-product-id="{tid}" data-product-title="{$product/title}" data-product-owner="{$product/owner}">
                                 <td width="160">
+                                    <span class="J_customize_props">
+                                        <xsl:for-each select="props/i">
+                                            <input type="hidden" name="{key}" value="{value}"/>
+                                        </xsl:for-each>
+                                    </span>
                                     <div class="snapshot" data-id="{_id}" title="点击可选中">
                              
                                         <div class="preview bgcolor-{props/i[key='bgcolor']/value}">
@@ -63,7 +68,6 @@
                                 <td>
                                     <span class="price">
                                         <xsl:value-of select="$product/price"/>
-
                                     </span>
                                 </td>
                             </tr>
@@ -88,19 +92,17 @@
                         <label>收货地址:</label>
                         <span class="J_address address" ox-refresh="html">
                             <xsl:choose>
-                                <xsl:when  test="count($addressbook) = 0">
+                                <xsl:when test="count($addressbook) = 0">
                                     <b class="bt-address">添加地址</b>
                                 </xsl:when>
                                 <xsl:otherwise>
                                     <xsl:variable select="$addressbook[selected]" name="defaultaddress"/>
-                                    
                                     <xsl:value-of select="$defaultaddress/name"/>
                                     (<xsl:value-of select="$defaultaddress/phone"/>)
                                     <xsl:value-of select="$defaultaddress/province"/>
                                     <xsl:value-of select="$defaultaddress/city"/>
                                     <xsl:value-of select="$defaultaddress/district"/>
                                     <xsl:value-of select="$defaultaddress/detail"/>
-                                    
                                 </xsl:otherwise>
                             </xsl:choose>
                         </span>
@@ -129,94 +131,42 @@
                             请添加收货地址&#160;&#160;&#160;&#160;<br/>-->
                         </em>
 
-                        <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
+                        <button class="bt-order J_btpay">提交订单</button>
                     </span>
                 </div>
             </div>
 
 
             <form class="J_mainform" method="post"></form>
+            <!--
+            <div class="J_popup fullpopup">
+                <h3 class="title">
+                    <button type="button" class="rightbtn J_close">关闭</button>
+                    地址管理
+                </h3>
+                <div class="content">
 
-            <script type="text/tpl" class="J_tpl"><![CDATA[
-            <table class="order-table" cellpadding="0" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th>预览</th>
-                        <th>数量</th>
-                        <th>价格</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#data}}
-                    <tr data-id="{{_id}}" data-product-id="{{product_id}}">
-                        <td width=160>
-                        <div class="snapshot">
-                            <div class="preview bgcolor-{{setting.bgcolor}}"">
-                            <div class="card-header">{{setting.text1}}</div>
-                            <div class="card-body tpl tpl-{{setting.tpl}}">
-                                <div class="central">
-                                    {{#setting.carlogo}}<img src="{{fullcarlogo}}"/>{{/setting.carlogo}}
-                                </div>
-                                <img src="http://i.oxm1.cc/uploads/git/wurui/img/2ahkwkkveTj1rgh0ueRlcquA5vz-1000.png" class="qrcode"/>
+                    <div class="address-form">
+                        <xsl:for-each select="$addressbook">
+                        <div class="formitem">
+                            <label>
+                                <xsl:value-of select="name"/>
+                                (<xsl:value-of select="phone"/>)<br/>
+                                <xsl:value-of select="province"/>
+                                <xsl:value-of select="city"/>
+                                <xsl:value-of select="district"/>
+                                <xsl:value-of select="detail"/>
 
-                            </div>
-                            <div class="card-footer">
-                                <span>{{setting.text2}}</span>
-                            </div>
+                            </label>
                         </div>
-
+                        </xsl:for-each>
+                        <div class="formitem">
+                            <button class="J_confirm">确认</button>
+                        </div>
                     </div>
-                </td>
-                <td>
-                    <button type="button" class="J_amountUp amount-up"></button>
-                    <br/>
-                    <input type="number" data-price="{{price}}" class="J_number amount-input" value="1" min="0" size="1"/>
-                    <br/>
-                    <button type="button" class="J_amountDown amount-down"></button>
-                </td>
-                <td>
-                    <span class="price">{{price}}</span>
-                </td>
-            </tr>
-            {{/data}}
+                </div>
+            </div>-->
 
-
-        </tbody>
-
-    </table>
-
-    <hr/>
-    <div class="lrbar">
-        <span>
-            商品总计: <span class="J_totalcount">{{data.length}}</span>张
-        </span>
-        <span>
-            商品总价: <span class="J_totalfee price">{{totalfee}}</span>
-        </span>
-    </div>
-    <div class="formbar">
-                <label>收货地址:</label><span class="J_address address noaddress">添加地址</span>
-            </div>
-            <div class="lrbar" style="display:none;">
-                <span>发货城市:杭州</span>
-                <span>
-                    运费: <span class="J_delieryfee price">包邮</span>
-                </span>
-            </div>
-            <hr/>
-            {{#hongbao}}
-            <div class="lrbar">
-                <span>
-                    专享优惠:{{title}}
-                </span>
-                <span>
-                    - <span class="J_hongbao price">{{amount}}</span>
-                </span>
-            </div>
-            {{/hongbao}}
-
-]]>
-            </script>
             <div class="J_popup fullpopup">
                 <h3 class="title">
                     <button type="button" class="rightbtn J_close">关闭</button>

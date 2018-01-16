@@ -1,6 +1,6 @@
 define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustache,OXJS) {
-    var apiHost = '//www.shaomachetie.com';
-    var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;
+    //var apiHost = '//www.shaomachetie.com';
+    var $mod, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;
 
     var OrderModel = {};
     var syncView = function (trigger) {
@@ -26,12 +26,13 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 OrderModel.totalsum = Math.max(0,OrderModel.totalfee -OrderModel.hongbao - -OrderModel.deliveryfee);
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
 
+
                 break
             case 'address':
                 OrderModel.totalsum = OrderModel.totalfee-OrderModel.hongbao - -OrderModel.deliveryfee;
 
                 $totalsum.html(OrderModel.totalsum.toFixed(2));
-                $btpay.removeAttr('disabled').siblings('.J_errtip').remove();
+               // $btpay.removeAttr('disabled').siblings('.J_errtip').remove();
                 break
             case 'material':
                 break
@@ -49,6 +50,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
             };
             $delivery.html(addrToString.call(addrObj)).removeClass('noaddress');
             OrderModel.address = addrObj;
+            /*
             DeliveryAdmin.getDeliveryFee(addrObj, function (r) {
                 OrderModel.deliveryfee = r - 0;
                 if(OrderModel.deliveryfee>0){
@@ -58,7 +60,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 }
 
                 syncView('address');
-            });
+            });*/
         },
         addAddress: function ($popup) {
             var $f = $('form', $popup),
@@ -68,27 +70,32 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
             for (var i = 0, field; field = fields[i++];) {
                 addrObj[field] = f[field].value;
             }
-            //console.log(addrObj);
+            //console.log(addrObj,$mod);
             this.fillAddress(addrObj);
-
-
+            $mod.OXPost({
+                addressbook:addrObj
+            })
 
         },
         getDeliveryFee: function (addrObj, fn) {
+            /*
             var p = []
             for (var k in addrObj) {
                 p.push(k + '=' + addrObj[k])
             }
+
             $.getJSON(apiHost+'/smct/getdeliveryfee?' + p.join('&') + '&callback=?', function (r) {
                 fn(r.data)
             })
+            */
         },
         renderLastAddress:function(){
             //目前绝大多数都是新来用户,唉~
+            /*
             $.getJSON(apiHost+'/smct/getlastaddress?&callback=?', function (r) {
 
                 r && r.data && DeliveryAdmin.fillAddress(r.data);
-            })
+            })*/
         }
     };
 
@@ -123,7 +130,8 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
 
 
     return {
-        init: function ($mod) {
+        init: function ($_mod) {
+            $mod=$_mod;
             var payurl=$mod.attr('data-payurl');
             var buildurl=$mod.attr('data-buildurl');
             var $list = $('.J_list', $mod);
@@ -181,7 +189,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                     case $tar.parent().hasClass('J_address'):
 
                         $popup.addClass('show');
-                        //alert($popup[0].className)
+                        
 
                         require(['./distpicker'], function (distpicker) {
                             distpicker.init({
@@ -209,6 +217,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 if ($totalcount.html() == 0) {
                     return alert('请至少添加一个商品')
                 }
+                /*
                 if(!OrderModel.address){
                     return alert('请填写地址')
                 }
@@ -220,16 +229,32 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 }
                 if(!/^(1\d{10}|(\d{3,4}\-)?\d{7,8}(\-\d+)?)$/.test(OrderModel.address.phone)){
                     return alert('请填写收货人电话')
-                }
+                }*/
                 loading = true;
                 $btpay.addClass('loading')
                 var pack = [];
+                var seller;
                 $('tr[data-id]').each(function (i, n) {
                     var $n = $(n);
+                    seller=$n.attr('data-product-owner');
+                    var customize=[];
+                    $('.J_customize_props>input',$n).each(function(i,n){
+                        customize.push({
+                            name:this.name,
+                            value:this.value
+                        })
+                    });
                     pack.push({
+                        name:$n.attr('data-product-title'),
+                        amount:$('.J_number', $n).val() - 0,
+                        price:$('.J_number', $n).attr('data-price')-0,
+                        id:$n.attr('data-product-id'),
+                        customize:customize
+/*
                         item: $n.attr('data-product-id'),
                         amount: $('.J_number', $n).val(),
                         customize:$n.attr('data-id')
+                        */
                         //material: $('.J_material', $n).val()
                         /**再多个性化定制,后面再考虑,要和商品价格打通
                         不行的话,此处再根据不同的如材质这样的特性来关联购买的商品,但事先肯定也必有一个更抽象的商品在,不然定制对象是什么呢?
@@ -239,7 +264,8 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                     })
                 });
 
-                var mainform = $('.J_mainform', $mod)[0];
+                //var mainform = $('.J_mainform', $mod)[0];
+                /*
                 var smtData = {
                     pack: JSON.stringify(pack),
                     //detail: JSON.stringify(pack),
@@ -250,13 +276,32 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                     deliveryfee: OrderModel.deliveryfee,
                     totalsum: OrderModel.totalsum.toFixed(2) -0,
                     hongbao: OrderModel.hongbao.toFixed(2) -0,
-                    paymethod:$paymethod.val()//paymethod在新的数据源下就不在这里设置了
-                    //encoded_codes:encoded_codes
-                };
-
+                };*/
+               
                 try {
-
-                    orderRest.post(data2order(smtData), function (r) {
+                    $mod.OXPost({
+                        orders:{
+                            title:'扫码车贴'+$totalcount.html()+'张',
+                            totalfee:OrderModel.totalsum.toFixed(2) -0,
+                            time:Date.now(),
+                            totalcount:$totalcount.html() - 0,
+                            status:0,
+                            seller:seller,
+                            buyer:OXJS.getUID(),
+                            delivery:$delivery.html().replace(/\s/g,''),//JSON.stringify(OrderModel.address),
+                            bill:[
+                                {                                    
+                                    item: 'deliveryfee',
+                                    value: OrderModel.deliveryfee
+                                },
+                                {
+                                    item: 'product',
+                                    value: $totalfee.html() - 0
+                                }
+                            ],
+                            content:pack
+                        }
+                    },function (r) {
 
                         if(r.code==0){
                             var new_id= r.message;
@@ -265,9 +310,10 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                         }else{
                             OXJS.toast('ERROR['+ r.message +']')
                         }
-                        console.log(r)
+                        //console.log(r)
 
                     })
+
                 }catch(e){
                     OXJS.toast('Catch Error:'+e.toString())
                 }
