@@ -1,37 +1,10 @@
 define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustache,OXJS) {
     var apiHost = '//www.shaomachetie.com';
-    var isInWeixin=/MicroMessenger/i.test(navigator.userAgent);
-    var isInQQ=/QQ/.test(navigator.userAgent);
-
-    //手机QQ,腾读新闻 QQNews/5.3.6 (iPhone; iOS 10.3.2; Scale/2.00)
-    //return document.body.innerHTML=navigator.userAgent
-    if(document.documentElement.getAttribute('env')=='local') {
-        //apiHost = 'http://192.168.1.103:8000'
-    }
-
     var tpl, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;
-    var queryString = function (query) {
-        var search = window.location.search + '';
-        if (search.charAt(0) != '?') {
-            return '';
-        }
-        else {
-            search = search.replace('?', '').split('&');
-            for (var i = 0; i < search.length; i++) {
-                if (search[i].split('=')[0] == query) {
-                    return decodeURI(search[i].split('=')[1]);
-                }
-            }
-            return '';
-        }
-    };
-    var bids = queryString('bids');
 
     var OrderModel = {};
-    var Settings = {};
-
-
     var syncView = function (trigger) {
+        OrderModel.hongbao=OrderModel.hongbao||0;
         switch (trigger) {
             case 'amount':
                 var totalcount = 0;
@@ -119,27 +92,6 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
         }
     };
 
-    var renderPaymethod=function(){
-        /*
-        $.getJSON(apiHost+'/smct/getpaymethods?&callback=?', function (r) {
-            var paymethods=(r && r.data)||[{value:'alipay',text:'支付宝'}]
-            var sel = $paymethod[0];
-            sel.options.length = 0;
-            for (var i = 0, n; n = paymethods[i++];) {
-                sel.options[sel.options.length] = new Option(n.text, n.value)
-            }
-        })
-        */
-    };
-
-    var param2settings=function(param){
-        if(!param)return {};
-        var obj={};
-        for(var i= 0,n;n=param[i++];){
-            obj[n.label]= n.value;
-        }//console.log(obj)
-        return obj;
-    };
 
     var data2order=function(data){
         var bill=[];
@@ -172,24 +124,8 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
 
     return {
         init: function ($mod) {
-            var uid=$mod.attr('data-uid'),payurl=$mod.attr('data-payurl');
-            var hongbao=function(str){
-                if(!str){
-                    OrderModel.hongbao=0;
-                    return
-                }
-                var split=str.split('#');
-                OrderModel.hongbao=split[1]-0;
-                return {
-                    title:split[0],
-                    amount:split[1]
-                }
-            }(localStorage.getItem('hongbao'));
-
-
+            var payurl=$mod.attr('data-payurl');
             var buildurl=$mod.attr('data-buildurl');
-            tpl = $('.J_tpl', $mod).html();
-
             var $list = $('.J_list', $mod);
             var $popup = $('.J_popup', $mod).on('click', function (e) {
                 var $tar = $(e.target);
@@ -203,192 +139,22 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                         break
                 }
             });
-            var productRest = OXJS.useREST('product').setDevHost('http://dev.openxsl.com/');;//md5('saomachetie')
-            var customizeRest = OXJS.useREST('customize').setDevHost('http://dev.openxsl.com/');;//md5('saomachetie')
+       
+            //$list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="'+buildurl+'">开始定制</a>').addClass('empty-order');
 
-            var orderRest=OXJS.useREST('order').setDevHost('http://dev.openxsl.com/');
-            var getList=function(fn){
-                customizeRest.get({ids:bids},function(r){
-                    if(r && r.length){
-                        var tids=[],
-                            customizes= r,
-                            obj={};
-                        for (var i = 0, customize; customize = customizes[i++];) {
-                            if(tids.indexOf(customize.tid)==-1) {
-                                tids.push(customize.tid);//不同的customize可能对应同一tid
-                            }
-                            //obj[n.tid]= n;
-                        }
-                        productRest.get({ids:tids.join(',')},function(r){
+            
+            var totalfee = 0;
+           
+            OrderModel.totalfee = totalfee;
+            $delivery = $('.J_address', $list);
+            $deliveryfee = $('.J_delieryfee', $list);
+            $totalsum = $('.J_totalsum', $list)
+            $totalcount = $('.J_totalcount', $list)
+            $totalfee = $('.J_totalfee', $list);
+            $paymethod=$('.J_paymethod',$list);
+            
 
-                            if(r && r.length){
-                                var customProds=[];
-
-                                for (var i = 0, customize; customize = customizes[i++];) {
-
-
-                                    for (var j = 0, n; n = r[j++];) {
-                                        if(customize.tid == n._id){
-
-                                            customProds.push({
-                                                _id: customize._id,
-                                                product_id: n._id,
-                                                price:n.price|| n.orig_price,
-                                                setting:param2settings(customize.props)
-                                            })
-                                        }
-
-                                    }
-
-                                }
-
-                                fn(customProds);
-                            }else{
-                                fn()
-                            }
-                        })
-                    }else{
-                        fn()
-                    }
-
-
-                })
-            };
-           // customizeRest.get({ids:bids},function(r){
-            getList(function(r){
-                //productRest.get({ids})
-            //$.getJSON(apiHost+'/smct/getbuilds?bids=' + bids + '&callback=?', function(r) {
-                if (r && r.length) {
-                    var list = r;
-                    var totalfee = 0;
-                    for (var i = 0, n; n = list[i++];) {
-                        totalfee += n.price;
-                        Settings[n._id] = n.setting;
-                    }
-                    $('.J_render',$list).html(Mustache.render(tpl, {
-                        data: list,
-                        totalfee: totalfee.toFixed(2),
-                       // paymethod:renderPaymethod(),
-                        hongbao:hongbao,
-                        fullcarlogo :function () {
-
-                            var str = ''
-                            if (/\d+/.test(this)) {
-                                str = 'cars/' + this + '.png'
-                            } else {
-                                str = 'carlogo/' + this + '.jpg'
-                            }
-                            return 'http://v.oxm1.cc/' + str
-                        }
-                    }));
-                    OrderModel.totalfee = totalfee;
-                    $delivery = $('.J_address', $list);
-                    $deliveryfee = $('.J_delieryfee', $list);
-                    $totalsum = $('.J_totalsum', $list)
-                    $totalcount = $('.J_totalcount', $list)
-                    $totalfee = $('.J_totalfee', $list);
-                    $paymethod=$('.J_paymethod',$list);
-                    renderPaymethod();
-
-                    var loading = false;
-                    $btpay = $('.J_btpay', $list).on('click', function () {
-                        if (loading ||this.disabled) {
-
-                            return false
-                        }
-
-                        if ($totalcount.html() == 0) {
-                            return alert('请至少添加一个商品')
-                        }
-                        if(!OrderModel.address){
-                            return alert('请填写地址')
-                        }
-                        if(!OrderModel.address.detail){
-                            return alert('请填写详细地址')
-                        }
-                        if(!OrderModel.address.name){
-                            return alert('请填写收货人姓名')
-                        }
-                        if(!/^(1\d{10}|(\d{3,4}\-)?\d{7,8}(\-\d+)?)$/.test(OrderModel.address.phone)){
-                            return alert('请填写收货人电话')
-                        }
-                        loading = true;
-                        $btpay.addClass('loading')
-                        var pack = [];
-                        $('tr[data-id]').each(function (i, n) {
-                            var $n = $(n);
-                            pack.push({
-                                item: $n.attr('data-product-id'),
-                                amount: $('.J_number', $n).val(),
-                                customize:$n.attr('data-id')
-                                //material: $('.J_material', $n).val()
-                                /**再多个性化定制,后面再考虑,要和商品价格打通
-                                不行的话,此处再根据不同的如材质这样的特性来关联购买的商品,但事先肯定也必有一个更抽象的商品在,不然定制对象是什么呢?
-                                 还是通盘考虑先定制再生成商品这种状态,就像吃麻辣烫下单过程一样
-                                 不然就得再新生成一个定制表,然后购买最新这个
-                                 */
-                            })
-                        });
-
-                        var mainform = $('.J_mainform', $mod)[0];
-                        var smtData = {
-                            pack: JSON.stringify(pack),
-                            //detail: JSON.stringify(pack),
-                            delivery: JSON.stringify(OrderModel.address),
-                            //codes: JSON.stringify(codes),
-                            totalcount: $totalcount.html() - 0,
-                            totalfee: $totalfee.html() - 0,
-                            deliveryfee: OrderModel.deliveryfee,
-                            totalsum: OrderModel.totalsum.toFixed(2) -0,
-                            hongbao: OrderModel.hongbao.toFixed(2) -0,
-                            paymethod:$paymethod.val()//paymethod在新的数据源下就不在这里设置了
-                            //encoded_codes:encoded_codes
-                        };
-
-                        try {
-
-                            orderRest.post(data2order(smtData), function (r) {
-
-                                if(r.code==0){
-                                    var new_id= r.message;
-                                    //todo: 去支付
-                                    location.href=payurl.replace(/\{oid\}/g,new_id).replace(/\{paymethod\}/g,smtData.paymethod);//+'?oid='+new_id
-                                }else{
-                                    OXJS.toast('ERROR['+ r.message +']')
-                                }
-                                console.log(r)
-
-                            })
-                        }catch(e){
-                            OXJS.toast('Catch Error:'+e.toString())
-                        }
-
-                        return false;
-
-                        //orderRest.post({})
-
-
-                        for (var k in smtData) {
-                            var hid = document.createElement('input')
-                            hid.type = 'hidden';
-                            hid.name = k;
-                            hid.value = smtData[k];
-                            mainform.appendChild(hid);
-                        }
-
-                        mainform.submit();
-
-
-                        return false;
-                    });
-                    DeliveryAdmin.renderLastAddress();
-                    //$('[data-toggle="distpicker"]').distpicker({});
-
-                    // $('[data-toggle="distpicker"]').distpicker({});
-                } else {
-                    $list.html('<i class="iconfont">&#xe631;</i>&nbsp;&nbsp;<br/>购物车是空的,赶紧去定制一个你喜欢的车贴吧~<br/><a href="'+buildurl+'">开始定制</a>').addClass('empty-order');
-                }
-            });
+            //DeliveryAdmin.renderLastAddress();
 
             $list.on('change', function (e) {
                 var $tar = $(e.target);
@@ -412,6 +178,7 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                         return false
                         break
                     case $tar.hasClass('J_address'):
+                    case $tar.parent().hasClass('J_address'):
 
                         $popup.addClass('show');
                         //alert($popup[0].className)
@@ -429,6 +196,86 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
                 }
 
             });
+            syncView('amount');
+
+
+            var loading = false;
+            $btpay = $('.J_btpay', $list).on('click', function () {
+                if (loading ||this.disabled) {
+
+                    return false
+                }
+
+                if ($totalcount.html() == 0) {
+                    return alert('请至少添加一个商品')
+                }
+                if(!OrderModel.address){
+                    return alert('请填写地址')
+                }
+                if(!OrderModel.address.detail){
+                    return alert('请填写详细地址')
+                }
+                if(!OrderModel.address.name){
+                    return alert('请填写收货人姓名')
+                }
+                if(!/^(1\d{10}|(\d{3,4}\-)?\d{7,8}(\-\d+)?)$/.test(OrderModel.address.phone)){
+                    return alert('请填写收货人电话')
+                }
+                loading = true;
+                $btpay.addClass('loading')
+                var pack = [];
+                $('tr[data-id]').each(function (i, n) {
+                    var $n = $(n);
+                    pack.push({
+                        item: $n.attr('data-product-id'),
+                        amount: $('.J_number', $n).val(),
+                        customize:$n.attr('data-id')
+                        //material: $('.J_material', $n).val()
+                        /**再多个性化定制,后面再考虑,要和商品价格打通
+                        不行的话,此处再根据不同的如材质这样的特性来关联购买的商品,但事先肯定也必有一个更抽象的商品在,不然定制对象是什么呢?
+                         还是通盘考虑先定制再生成商品这种状态,就像吃麻辣烫下单过程一样
+                         不然就得再新生成一个定制表,然后购买最新这个
+                         */
+                    })
+                });
+
+                var mainform = $('.J_mainform', $mod)[0];
+                var smtData = {
+                    pack: JSON.stringify(pack),
+                    //detail: JSON.stringify(pack),
+                    delivery: JSON.stringify(OrderModel.address),
+                    //codes: JSON.stringify(codes),
+                    totalcount: $totalcount.html() - 0,
+                    totalfee: $totalfee.html() - 0,
+                    deliveryfee: OrderModel.deliveryfee,
+                    totalsum: OrderModel.totalsum.toFixed(2) -0,
+                    hongbao: OrderModel.hongbao.toFixed(2) -0,
+                    paymethod:$paymethod.val()//paymethod在新的数据源下就不在这里设置了
+                    //encoded_codes:encoded_codes
+                };
+
+                try {
+
+                    orderRest.post(data2order(smtData), function (r) {
+
+                        if(r.code==0){
+                            var new_id= r.message;
+                            //todo: 去支付
+                            location.href=payurl.replace(/\{oid\}/g,new_id).replace(/\{paymethod\}/g,smtData.paymethod);//+'?oid='+new_id
+                        }else{
+                            OXJS.toast('ERROR['+ r.message +']')
+                        }
+                        console.log(r)
+
+                    })
+                }catch(e){
+                    OXJS.toast('Catch Error:'+e.toString())
+                }
+
+                return false;
+
+            });
+
 
 
 

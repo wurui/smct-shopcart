@@ -7,21 +7,115 @@
         <xsl:param name="payurl"/>
         <!-- className 'J_OXMod' required  -->
         <div class="J_OXMod oxmod-smct-shopcart" ox-mod="smct-shopcart" data-payurl="{$payurl}" data-buildurl="{$buildurl}" data-uid="{login/uid}">
+            <xsl:variable select="data/product-list/i" name="products"/>
+            <xsl:variable select="data/customize/i" name="customize"/>
+            <xsl:variable select="data/addressbook/i" name="addressbook" />
+            
             <div class="J_list list">
                 <div class="J_render">
-                    <br/><br/>
-                    订单加载中...
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                      <table class="order-table" cellpadding="0" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th align="left">
+                                    &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
+                                    预览
+                                </th>
+                                <th>数量</th>
+                                <th>价格</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        <xsl:for-each select="$customize">
+                            <xsl:variable select="tid" name="product_id"/>
+                            <xsl:variable select="$products[id = $product_id]" name="product"/>
+                            
+                            <tr data-id="{_id}" data-product-id="{tid}">
+                                <td width="160">
+                                    <div class="snapshot" data-id="{_id}" title="点击可选中">
+                             
+                                        <div class="preview bgcolor-{props/i[key='bgcolor']/value}">
+                                            <div class="card-header">
+                                                <xsl:value-of select="props/i[key='text1']/value"/>
+                                            </div>
+                                            <div class="card-body tpl tpl-{props/i[key='tpl']/value}">
+                                                <div class="central">
+                                                    <img src="http://v.oxm1.cc/cars/{props/i[key='carlogo']/value}.png"/>
+                                                </div>
+                                                <img src="http://i.oxm1.cc/uploads/git/wurui/img/2ahkwkkveTj1rgh0ueRlcquA5vz-1000.png" class="qrcode"/>
+
+                                            </div>
+                                            <div class="card-footer">
+                                                <span>
+                                                    <xsl:value-of select="props/i[key='text2']/value"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="J_amountUp amount-up"></button>
+                                    <br/>
+                                    <input type="number" data-price="{$product/price}" class="J_number amount-input" value="1" min="0" size="1"/>
+                                    <br/>
+                                    <button type="button" class="J_amountDown amount-down"></button>
+                                </td>
+                                <td>
+                                    <span class="price">
+                                        <xsl:value-of select="$product/price"/>
+
+                                    </span>
+                                </td>
+                            </tr>
+                        </xsl:for-each>
+                            
+                        </tbody>
+                    </table>
+
+
+                    <hr/>
+                    <div class="lrbar">
+                        <span>
+                            商品总计: <span class="J_totalcount"><xsl:value-of select="count($customize)"/></span>张
+                        </span>
+                        <span>
+                           
+                            商品总价: <span class="J_totalfee price">--.--</span>
+                        </span>
+                    </div>
+
+                    <div class="formbar">
+                        <label>收货地址:</label>
+                        <span class="J_address address" ox-refresh="html">
+                            <xsl:choose>
+                                <xsl:when  test="count($addressbook) = 0">
+                                    <b class="bt-address">添加地址</b>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:variable select="$addressbook[selected]" name="defaultaddress"/>
+                                    
+                                    <xsl:value-of select="$defaultaddress/name"/>
+                                    (<xsl:value-of select="$defaultaddress/phone"/>)
+                                    <xsl:value-of select="$defaultaddress/province"/>
+                                    <xsl:value-of select="$defaultaddress/city"/>
+                                    <xsl:value-of select="$defaultaddress/district"/>
+                                    <xsl:value-of select="$defaultaddress/detail"/>
+                                    
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </span>
+                    </div>
+                    <div class="lrbar" style="display:none;">
+                        <span>发货城市:杭州</span>
+                        <span>
+                            运费: <span class="J_delieryfee price">包邮</span>
+                        </span>
+                    </div>
                 </div>
+                <hr/>
                 <div class="lrbar">
                     <span>
-                        支付方式:
-                        <select class="J_paymethod">
-                            <xsl:for-each select="data/options/i">
-                                <option value="{value}"><xsl:value-of select="text"/></option>
-                            </xsl:for-each>
-                        </select>
+                    
                     </span>
                     <span>
                         实付金额: <big class="J_totalsum price">--.--</big>
@@ -30,7 +124,11 @@
                 <div class="lrbar">
                     <span></span>
                     <span>
-                        <em class="err-tip J_errtip">请添加收货地址&#160;&#160;&#160;&#160;<br/></em>
+                        
+                        <em class="err-tip J_errtip"><!--
+                            请添加收货地址&#160;&#160;&#160;&#160;<br/>-->
+                        </em>
+
                         <button class="bt-order J_btpay" disabled="disabled">提交订单</button>
                     </span>
                 </div>

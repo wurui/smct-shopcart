@@ -14,30 +14,120 @@
         <icon>//oxm1.cc/img/app_default.png</icon>
     </p>
     <data>
-        <address ip="58.100.3.64" ADAPTERID="1593656d78bbca7385c7b63b2"><city>杭州市</city><province>浙江省</province></address>
-        <address>
-            <province>浙江省</province>
-            <city>杭州市</city>
-        </address>
-        <options.test>
+        <addressbook>
             <i>
-                <text>支付宝1</text>
-                <value>alipay</value>
+                <province>浙江省</province>
+                <city>杭州市</city>
+                <district>余杭区</district>
+                <detail>同城印象西区20</detail>
+                <name>foxfox</name>
+                <phone>18888888888</phone>
             </i>
             <i>
-                <text>微信支付1</text>
-                <value>weixinh5</value>
+                <province>浙江省</province>
+                <city>杭州市</city>
+                <district>余杭区</district>
+                <detail>同城印象西区10</detail>
+                <name>wuru</name>
+                <phone>19182222222</phone>
+                <selected>true</selected>
             </i>
-        </options.test>
-        <options>
+        </addressbook>
+        <deliveryfee>
             <i>
-                <text>支付宝</text>
-                <value>alipay</value>
+                <form>杭州</form>
+                <to>武汉</to>
+                <fee>8.5</fee>
+                <company>圆通</company>
+            </i>
+        </deliveryfee>
+
+        <product-list>
+            <i>
+                <id>1234</id>
+                <title>扫码车贴-22</title>
+                <price>15.22</price>
             </i>
             <i>
-                <text>微信支付</text>
-                <value>weixinh5</value>
+                <id>28288282</id>
+                <title>扫码车贴-定制版</title>
+                <price>12.22</price>
             </i>
-        </options>
+        </product-list>
+        <customize>
+            <i>
+                <props>
+                    <i>
+                        <key>tpl</key>
+                        <value>1</value>
+                    </i>
+                    <i>
+                        <key>bgcolor</key>
+                        <value>1</value>
+                    </i>
+                    <i>
+                        <key>text1</key>
+                        <value>扫码移车</value>
+                    </i>
+                    <i>
+                        <key>text2</key>
+                        <value>www.shaomachetie.com</value>
+                    </i>
+                    <i>
+                        <key>carlogo</key>
+                        <value>10007</value>
+                    </i>
+                </props>
+                <uid>git/wurui</uid>
+                <time>
+                    <y>2018</y>
+                    <M>1</M>
+                    <d>8</d>
+                    <H>12</H>
+                    <m>9</m>
+                    <s>22</s>
+                </time>
+                <title>扫码车贴-定制版-定制</title>
+                <tid>28288282</tid>
+            </i>
+            <i>
+                <props>
+                    <i>
+                        <key>tpl</key>
+                        <value>1</value>
+                    </i>
+                    <i>
+                        <key>bgcolor</key>
+                        <value>1</value>
+                    </i>
+                    <i>
+                        <key>text1</key>
+                        <value>扫码~车</value>
+                    </i>
+                    <i>
+                        <key>text2</key>
+                        <value>www.shaomachetie.com</value>
+                    </i>
+                    <i>
+                        <key>carlogo</key>
+                        <value>20047</value>
+                    </i>
+                </props>
+                <uid>git/wurui</uid>
+                
+                <time>
+                    <y>2018</y>
+                    <M>1</M>
+                    <d>8</d>
+                    <H>12</H>
+                    <m>9</m>
+                    <s>22</s>
+                </time>
+                <title>扫码车贴-定制版-定制</title>
+                <tid>28288282</tid>
+            </i>
+
+
+        </customize>
     </data>
 </root>
