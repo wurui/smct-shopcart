@@ -33,6 +33,7 @@
                 <selected>true</selected>
             </i>
         </addressbook>
+        <!--
         <deliveryfee>
             <i>
                 <form>杭州</form>
@@ -40,7 +41,7 @@
                 <fee>8.5</fee>
                 <company>圆通</company>
             </i>
-        </deliveryfee>
+        </deliveryfee>-->
 
         <product-list>
             <i>

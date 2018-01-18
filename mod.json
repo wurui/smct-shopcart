@@ -1,6 +1,6 @@
 {
   "name": "smct-shopcart",
   "version": "0.0.1",
-  "apiDependencies": ["addressbook","deliveryfee","product-list","customize"]
+  "apiDependencies": ["addressbook","product-list","customize"]
 }
 

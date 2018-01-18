@@ -1,4 +1,4 @@
-define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustache,OXJS) {
+define(['require', 'zepto','oxjs'], function (require, undef,OXJS) {
     //var apiHost = '//www.shaomachetie.com';
     var $mod, $delivery, $deliveryfee, $totalcount, $totalfee, $btpay, $totalsum,$paymethod;
 
@@ -99,33 +99,6 @@ define(['require', 'zepto', 'mustache','oxjs'], function (require, undef, Mustac
         }
     };
 
-
-    var data2order=function(data){
-        var bill=[];
-        if(data.deliveryfee) {
-            bill.push({
-                item: 'deliveryfee',
-                value: data.deliveryfee
-            });
-        }
-        if(data.hongbao) {
-            bill.push({
-                item: 'hongbao',
-                value: -data.hongbao
-            })
-        }
-        var order={
-            title:'定制版扫码车贴'+data.totalcount+'张',
-            pack:data.pack,
-            delivery:data.delivery,
-            totalcount:data.totalcount,
-            totalfee:data.totalsum,
-            bill:JSON.stringify(bill)
-            //seller:
-        };
-
-        return order;
-    }
 
 
 
